@@ -23,9 +23,26 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog(); // thay logging mặc định bằng Serilog
 
+// ── Railway/Heroku cấp PORT động → bind vào đúng cổng đó (nếu không có thì giữ mặc định 8080) ──
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
 // ── Database — chọn provider: "Sqlite" (local dev, mặc định) hoặc "Postgres" (Docker/production) ──
 var dbProvider       = builder.Configuration["DatabaseProvider"] ?? "Sqlite";
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// ── Railway/Heroku cấp DATABASE_URL dạng postgres://user:pass@host:port/db → chuyển sang chuỗi Npgsql ──
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+    var uri  = new Uri(databaseUrl);
+    var info = uri.UserInfo.Split(':');
+    connectionString = $"Host={uri.Host};Port={(uri.Port > 0 ? uri.Port : 5432)};" +
+                       $"Database={uri.AbsolutePath.TrimStart('/')};Username={info[0]};Password={info[1]};" +
+                       $"SSL Mode=Require;Trust Server Certificate=true";
+    dbProvider = "Postgres";
+}
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     if (dbProvider.Equals("Postgres", StringComparison.OrdinalIgnoreCase))

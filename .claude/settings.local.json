@@ -103,7 +103,9 @@
       "Bash(grep -vE \"^\\\\.$|^\\\\.\\\\.$\")",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(grep -iE \"\\\\.env$|Development\\\\.json|\\\\.db$|/keys/|/logs/\")"
+      "Bash(grep -iE \"\\\\.env$|Development\\\\.json|\\\\.db$|/keys/|/logs/\")",
+      "Bash(git config *)",
+      "Bash(git commit -q -m 'MedCare: hệ thống quản lý phòng khám + AI \\(Docker, Postgres, CI/CD, tests\\) *)"
     ]
   }
 }
