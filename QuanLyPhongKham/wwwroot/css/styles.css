@@ -50,6 +50,8 @@
       }
       html {
         /* scroll-behavior: smooth xoá — xung đột với GSAP ScrollTrigger gây giật khi cuộn */
+        overflow-x: hidden;   /* chặn tràn ngang trên mobile (kể cả phần tử fixed) */
+        max-width: 100%;
       }
       body {
         font-family:
@@ -498,8 +500,27 @@
           margin: 0 auto !important;
           padding: 0 5% !important;
         }
-        .hero-stats { justify-content: center; }
+        .hero-stats { justify-content: center; flex-wrap: wrap; gap: 22px 30px; }
         .hero-search { margin: 0 auto; }
+
+        /* ── Nav trên mobile: cuộn ngang NỘI BỘ thay vì đẩy tràn cả trang (gây khoảng trắng phải) ── */
+        .nav-inner {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;           /* Firefox: ẩn thanh cuộn */
+        }
+        .nav-inner::-webkit-scrollbar { display: none; } /* Chrome/Safari: ẩn thanh cuộn */
+        .nav-link { padding: 14px 12px; white-space: nowrap; }
+        /* Ẩn ô tìm kiếm trong nav trên mobile (đã có ô AI ở hero) → đỡ chật */
+        .nav-search-box { display: none !important; }
+
+        /* Thanh vai trò (khi đăng nhập) cũng cho cuộn ngang nội bộ, không đẩy tràn trang */
+        #role-banner {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+        #role-banner::-webkit-scrollbar { display: none; }
       }
 
       .hero-content {
