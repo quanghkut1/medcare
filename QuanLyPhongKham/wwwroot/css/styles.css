@@ -3915,6 +3915,29 @@
         .appt-table {
           font-size: 12px;
         }
+
+        /* ── Ép mọi grid nhiều cột còn sót về 1 cột trên điện thoại ── */
+        .page-wrap,
+        .s-stats-grid,
+        .dd-metrics,
+        .emr-grid,
+        .emr-vitals-grid {
+          grid-template-columns: 1fr;
+        }
+        /* ── Chống "grid/flex blowout": cho phép card co nhỏ bằng màn hình ──
+           (thiếu min-width:0 → cột nở rộng hơn nội dung → card tràn, cụt chữ phải) */
+        .page-wrap > *,
+        #sidebar,
+        .svc-card, .s-card, .news-card, .spec-card, .doc-card,
+        .hero-stat {
+          min-width: 0;
+          max-width: 100%;
+        }
+        /* Ảnh/khung không vượt quá bề ngang màn hình */
+        img, iframe, video {
+          max-width: 100%;
+          height: auto;
+        }
       }
 
       /* ── NEWS SECTION ── */
