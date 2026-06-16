@@ -1,0 +1,57 @@
+@model QuanLyPhongKham.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Tổng quan hệ thống";
+    ViewData["Active"] = "dashboard";
+    Layout = "_AdminLayout";
+
+    var stats = new[] {
+        new { Icon="stethoscope",  Label="Bác sĩ",        Value=Model.TotalDoctors,      C1="#1057a4", C2="#0a3f7f" },
+        new { Icon="users-round",  Label="Bệnh nhân",     Value=Model.TotalPatients,     C1="#00b896", C2="#008a71" },
+        new { Icon="calendar-days",Label="Tổng lịch hẹn", Value=Model.TotalAppointments, C1="#f59e0b", C2="#d97706" },
+        new { Icon="hourglass",    Label="Chờ xác nhận",  Value=Model.PendingAppts,      C1="#e11d48", C2="#be123c" },
+    };
+}
+
+<!-- Stat cards -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:26px">
+    @foreach (var s in stats)
+    {
+        <div class="adm-card" style="padding:22px 22px 20px">
+            <div style="width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+                background:linear-gradient(135deg,@s.C1,@s.C2);box-shadow:0 8px 18px -6px @s.C1;margin-bottom:16px">
+                <i data-lucide="@s.Icon" style="width:24px;height:24px;stroke:#fff;stroke-width:2"></i>
+            </div>
+            <div style="font-family:'Fraunces',serif;font-size:34px;font-weight:700;line-height:1;color:#0f172a">@s.Value</div>
+            <div style="font-size:13px;color:#64748b;margin-top:6px">@s.Label</div>
+        </div>
+    }
+</div>
+
+<!-- Accounts table -->
+<div class="adm-card" style="overflow:hidden">
+    <div style="padding:20px 22px;border-bottom:1px solid #eef3fa;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#0f172a">
+            <i data-lucide="users" style="width:18px;height:18px;stroke:#1057a4;stroke-width:2"></i> Danh sách tài khoản
+        </div>
+        <a href="/Home/QuanLyTaiKhoan" class="btn-pri" style="padding:9px 16px;font-size:13px">Quản lý tài khoản</a>
+    </div>
+    <table class="adm-table">
+        <thead>
+            <tr><th>ID</th><th>Tài khoản</th><th>Họ tên</th><th>Email</th><th>Vai trò</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var acc in Model.Accounts)
+            {
+                var rc = acc.Role == "Admin" ? "#7c3aed" : acc.Role == "Doctor" ? "#1057a4" : "#00b896";
+                var rb = acc.Role == "Admin" ? "#f5f3ff" : acc.Role == "Doctor" ? "#eaf2ff" : "#f0fdf4";
+                <tr>
+                    <td style="color:#94a3b8">#@acc.Id</td>
+                    <td style="font-weight:600">@acc.Username</td>
+                    <td>@acc.FullName</td>
+                    <td style="color:#64748b">@(string.IsNullOrEmpty(acc.Email) ? "—" : acc.Email)</td>
+                    <td><span class="badge" style="background:@rb;color:@rc">@acc.Role</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

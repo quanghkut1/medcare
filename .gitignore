@@ -1,0 +1,21 @@
+# ===== .NET build output =====
+bin/
+obj/
+*.user
+.vs/
+
+# ===== BÍ MẬT — TUYỆT ĐỐI KHÔNG COMMIT =====
+.env
+**/appsettings.Development.json
+**/keys/
+
+# ===== Database & logs cục bộ =====
+*.db
+*.db-shm
+*.db-wal
+**/logs/
+**/backups/
+
+# ===== Khác =====
+*.swp
+.DS_Store

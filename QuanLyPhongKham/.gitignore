@@ -1,0 +1,25 @@
+bin/
+obj/
+node_modules/
+
+*.user
+*.suo
+*.rsuser
+*.lscache
+
+appsettings.Development.json
+appsettings.Production.json
+.env
+
+# Database SQLite (chứa dữ liệu bệnh nhân — không commit)
+*.db
+*.db-shm
+*.db-wal
+
+# Backup files
+*.bak
+
+ngrok.exe
+logs/
+keys/
+backups/

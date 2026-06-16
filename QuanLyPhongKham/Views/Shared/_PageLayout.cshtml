@@ -1,0 +1,167 @@
+@{
+    var active = (ViewData["Active"] as string) ?? "";
+    string Nav(string key) => active == key ? "nav-link active" : "nav-link";
+}
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · MedCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap&subset=latin,vietnamese" />
+    <link rel="stylesheet" href="~/css/styles.css?v=26" />
+    <script defer src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <style>
+        /* ── Navbar: icon + hover nhấc ── */
+        #site-nav .nav-link { display:inline-flex; align-items:center; gap:7px; transition:color .25s, transform .25s; }
+        #site-nav .nav-item:hover .nav-link { transform:translateY(-2px); color:var(--blue); }
+        #site-nav .nav-link i { width:16px; height:16px; stroke-width:2; }
+
+        /* ── HERO BANNER full-width (ảnh y tế + overlay gradient) ── */
+        .hero-banner { position:relative; padding:158px 24px 64px; text-align:center; color:#fff;
+            background-color:#0d3a6b; background-size:cover; background-position:center; overflow:hidden; }
+        .hero-banner::before { content:""; position:absolute; inset:0;
+            background:linear-gradient(120deg, rgba(11,30,74,.90), rgba(0,124,104,.74)); }
+        .hero-banner > .hb-inner { position:relative; z-index:1; max-width:760px; margin:0 auto; }
+        .breadcrumb { display:inline-flex; align-items:center; gap:8px; font-size:13px;
+            color:rgba(255,255,255,.82); margin-bottom:14px; }
+        .breadcrumb a { color:rgba(255,255,255,.82); text-decoration:none; }
+        .breadcrumb a:hover { color:#fff; }
+        .hero-banner h1 { font-family:"Fraunces",serif; font-size:clamp(30px,4.4vw,50px);
+            line-height:1.08; letter-spacing:-1px; margin:0 0 14px; }
+        .hero-banner p { font-size:16.5px; color:rgba(255,255,255,.9); max-width:620px; margin:0 auto 24px; line-height:1.6; }
+        .hero-cta { display:inline-flex; align-items:center; gap:8px; background:#fff; color:var(--blue);
+            font-weight:700; font-size:15px; padding:13px 26px; border-radius:100px; text-decoration:none;
+            box-shadow:0 12px 28px rgba(0,0,0,.22); transition:transform .25s, box-shadow .25s; }
+        .hero-cta:hover { transform:translateY(-3px); box-shadow:0 18px 36px rgba(0,0,0,.28); }
+
+        /* ── Khung nội dung ── */
+        .container { max-width:1180px; margin:0 auto; padding:52px 24px 72px; }
+        .sec-head { text-align:center; max-width:640px; margin:0 auto 38px; }
+        .sec-head h2 { font-family:"Fraunces",serif; font-size:30px; color:var(--txt); letter-spacing:-.6px; }
+        .sec-head p { color:var(--muted); font-size:15px; margin-top:8px; }
+        .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+        .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+        @@media (max-width:980px){ .grid-3{ grid-template-columns:repeat(2,1fr);} }
+        @@media (max-width:680px){ .grid-3,.grid-2{ grid-template-columns:1fr; } .hero-banner{ padding-top:140px; } }
+
+        /* ── Card chuyên khoa (có thống kê) ── */
+        .spec-card { background:#fff; border:1px solid rgba(16,24,40,.07); border-radius:18px; padding:26px;
+            box-shadow:0 2px 10px rgba(16,24,40,.04); transition:transform .3s, box-shadow .3s; }
+        .spec-card:hover { transform:translateY(-10px); box-shadow:0 24px 50px rgba(16,87,164,.16); }
+        .spec-ic { width:56px; height:56px; border-radius:15px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+        .spec-card h3 { font-size:18px; font-weight:700; color:var(--txt); margin-bottom:12px; }
+        .spec-stats { display:flex; gap:20px; margin:0 0 12px; }
+        .spec-stats .n { font-family:"Fraunces",serif; font-size:20px; font-weight:700; line-height:1; }
+        .spec-stats .l { font-size:11.5px; color:var(--muted); margin-top:3px; }
+        .spec-card p { font-size:13.5px; color:var(--muted); line-height:1.6; }
+        .card-link { display:inline-flex; align-items:center; gap:5px; margin-top:14px; font-weight:600; font-size:14px; text-decoration:none; }
+
+        /* ── Card bác sĩ (kiểu BookingCare) ── */
+        .doc-card { background:#fff; border:1px solid rgba(16,24,40,.07); border-radius:18px; overflow:hidden;
+            box-shadow:0 2px 10px rgba(16,24,40,.04); transition:transform .3s, box-shadow .3s; }
+        .doc-card:hover { transform:translateY(-8px); box-shadow:0 24px 50px rgba(16,87,164,.16); }
+        .doc-banner { height:118px; background:linear-gradient(135deg,#0ea5e9,#14b8a6); position:relative; }
+        .doc-avatar { width:86px; height:86px; border-radius:50%; border:4px solid #fff; position:absolute;
+            left:50%; bottom:-43px; transform:translateX(-50%); background:linear-gradient(135deg,#1057a4,#00b896);
+            color:#fff; display:flex; align-items:center; justify-content:center; font-family:"Fraunces",serif;
+            font-size:30px; font-weight:700; box-shadow:0 6px 16px rgba(0,0,0,.18); }
+        .doc-body { padding:54px 20px 22px; text-align:center; }
+        .doc-body h3 { font-size:17px; font-weight:700; color:var(--txt); }
+        .doc-rate { color:#f59e0b; font-size:13px; margin:6px 0 2px; font-weight:600; }
+        .doc-exp { font-size:12.5px; color:var(--muted); }
+        .doc-spec { display:inline-block; margin:10px 0 14px; padding:4px 13px; border-radius:100px;
+            background:var(--blue-l); color:var(--blue); font-size:12px; font-weight:600; }
+        .doc-btn { display:block; padding:10px; border-radius:11px; background:var(--blue); color:#fff;
+            text-decoration:none; font-weight:600; font-size:13.5px; transition:background .2s; }
+        .doc-btn:hover { background:var(--blue-d); }
+
+        /* ── Card tin tức (báo điện tử) ── */
+        .news-card { background:#fff; border:1px solid rgba(16,24,40,.07); border-radius:16px; overflow:hidden;
+            box-shadow:0 2px 10px rgba(16,24,40,.04); transition:transform .3s, box-shadow .3s;
+            display:flex; flex-direction:column; text-decoration:none; }
+        .news-card:hover { transform:translateY(-6px); box-shadow:0 22px 46px rgba(16,24,40,.13); }
+        .news-thumb { height:184px; overflow:hidden; background:#eef2f7; position:relative; }
+        .news-thumb img { width:100%; height:100%; object-fit:cover; transition:transform .55s ease; }
+        .news-card:hover .news-thumb img { transform:scale(1.08); }
+        .news-tag { position:absolute; top:12px; left:12px; background:#fff; color:var(--blue);
+            font-size:11px; font-weight:700; padding:4px 11px; border-radius:100px; box-shadow:0 4px 10px rgba(0,0,0,.12); }
+        .news-body { padding:18px; flex:1; display:flex; flex-direction:column; }
+        .news-body h3 { font-size:16px; font-weight:700; color:var(--txt); line-height:1.4; }
+        .news-body p { font-size:13px; color:var(--muted); line-height:1.6; margin-top:8px; flex:1; }
+        .news-meta { display:flex; gap:14px; margin-top:14px; font-size:12px; color:var(--hint); }
+        .news-meta span { display:inline-flex; align-items:center; gap:5px; }
+    </style>
+</head>
+<body class="no-role">
+    <header id="site-header">
+        <div class="hd-inner">
+            <a class="logo" href="/">
+                <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+                <span class="logo-text"><b>Med</b>Care</span>
+            </a>
+            <div class="hd-right">
+                <a class="hd-hotline" href="tel:19001234">
+                    <div class="hd-hotline-dot"></div>
+                    <i data-lucide="phone-call" style="width:14px;height:14px;stroke:#ef4444;stroke-width:2.2"></i>
+                    Cấp cứu: 1900-1234
+                </a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    var roleVi = User.IsInRole("Admin") ? "Quản trị" : User.IsInRole("Doctor") ? "Bác sĩ" : "Bệnh nhân";
+                    var roleColor = User.IsInRole("Admin") ? "#7c3aed" : User.IsInRole("Doctor") ? "#065f46" : "#1057a4";
+                    <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#0f172a">
+                        <span style="width:7px;height:7px;border-radius:50%;background:@roleColor"></span>
+                        @roleVi · @User.Identity?.Name
+                    </span>
+                    <a class="btn-login" href="/Auth/Logout">Đăng xuất</a>
+                }
+                else
+                {
+                    <a class="btn-login" href="/">Đăng nhập</a>
+                }
+                <a class="btn-appt" href="/" style="text-decoration:none">
+                    <i data-lucide="calendar-plus" style="width:15px;height:15px;stroke:currentColor;stroke-width:2"></i>
+                    Đặt lịch ngay
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <nav id="site-nav">
+        <div class="nav-inner">
+            <div class="nav-item"><a href="/" class="@Nav("home")"><i data-lucide="home"></i>Trang chủ</a></div>
+            <div class="nav-item"><a href="/Home/ChuyenKhoa" class="@Nav("chuyenkhoa")"><i data-lucide="stethoscope"></i>Chuyên khoa</a></div>
+            <div class="nav-item"><a href="/Home/BacSi" class="@Nav("bacsi")"><i data-lucide="user-round"></i>Bác sĩ</a></div>
+            <div class="nav-item"><a href="/" class="nav-link"><i data-lucide="calendar-days"></i>Đặt lịch</a></div>
+            <div class="nav-item"><a href="/Home/TinTuc" class="@Nav("tintuc")"><i data-lucide="newspaper"></i>Tin tức</a></div>
+            <div class="nav-item"><a href="/Home/LienHe" class="@Nav("lienhe")"><i data-lucide="phone"></i>Liên hệ</a></div>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer id="site-footer" style="margin-top:0">
+        <div class="footer-top">
+            <div style="max-width:1180px;margin:0 auto;padding:40px 24px;text-align:center;color:#cbd5e1">
+                <div style="font-family:'Fraunces',serif;font-size:22px;color:#fff;margin-bottom:8px"><b>Med</b>Care</div>
+                <p style="font-size:14px">Hệ thống quản lý phòng khám thông minh · Hotline 1900-1234</p>
+                <p style="font-size:12px;margin-top:10px;opacity:.6">© 2026 MedCare. Đồ án tốt nghiệp.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function _ic(){ if (window.lucide && lucide.createIcons) lucide.createIcons(); }
+        window.addEventListener("DOMContentLoaded", _ic);
+        window.addEventListener("load", _ic);
+    </script>
+    <script src="~/js/header-scroll.js?v=26"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

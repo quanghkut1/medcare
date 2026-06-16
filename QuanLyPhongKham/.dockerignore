@@ -1,0 +1,13 @@
+bin/
+obj/
+logs/
+.vs/
+.git/
+*.db
+*.db-shm
+*.db-wal
+**/appsettings.Development.json
+Migrations/*.Designer.cs.bak
+*.user
+.env
+keys/

@@ -1,0 +1,219 @@
+@model IEnumerable<QuanLyPhongKham.Models.Appointment>
+
+@{
+    bool isDoctor = User.IsInRole("Doctor");
+    ViewData["Title"] = isDoctor ? "Quản Lý Lịch Hẹn" : "Lịch Khám Của Tôi";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">
+            @if (isDoctor)
+            {
+                <text>👨‍⚕️ Bảng Điều Khiển Của Bác Sĩ</text>
+            }
+            else
+            {
+                <text>📅 Lịch Khám Của Tôi</text>
+            }
+        </h2>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm">
+            ✔️ @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendar-view" type="button" role="tab">
+                🕒 Lịch Trình (Theo Giờ)
+            </button>
+        </li>
+        @if (isDoctor)
+        {
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="list-tab" data-bs-toggle="tab" data-bs-target="#list-view" type="button" role="tab">
+                    📋 Bảng Danh Sách Chi Tiết
+                </button>
+            </li>
+        }
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        
+        <div class="tab-pane fade show active" id="calendar-view" role="tabpanel">
+            <div class="card shadow-sm border-0 p-3">
+                <div id="calendar"></div>
+            </div>
+        </div>
+
+        @if (isDoctor)
+        {
+            <div class="tab-pane fade" id="list-view" role="tabpanel">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0 table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th class="text-center">Mã</th>
+                                    <th>Tên Bệnh Nhân</th>
+                                    <th>Triệu Chứng</th>
+                                    <th>Ngày Khám</th>
+                                    <th class="text-center">Trạng Thái</th>
+                                    <th class="text-center">Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.Any())
+                                {
+                                    <tr><td colspan="6" class="text-center text-muted py-4">Chưa có ai đặt lịch khám.</td></tr>
+                                }
+                                else
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="text-center fw-bold">#@item.Id</td>
+                                            <td class="fw-bold">@item.Patient?.FullName</td>
+                                            <td>@item.Symptoms</td>
+                                            <td>@item.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td class="text-center">
+                                                @if(item.Status == "Chờ xác nhận") {
+                                                    <span class="badge bg-warning text-dark">@item.Status</span>
+                                                } else if (item.Status == "Từ chối") {
+                                                    <span class="badge bg-danger">@item.Status</span>
+                                                } else {
+                                                    <span class="badge bg-success">@item.Status</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    @if(item.Status == "Chờ xác nhận") {
+                                                        <form method="post" action="/Home/XacNhanLich">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <button type="submit" class="btn btn-sm btn-outline-success fw-bold">✔ Xác nhận</button>
+                                                        </form>
+                                                    } else if (item.Status == "Từ chối") {
+                                                        <span class="badge bg-light text-secondary border">Đã hủy bỏ</span>
+                                                    } else {
+                                                        <button class="btn btn-sm btn-info text-white fw-bold shadow-sm" onclick="showMedicalRecordModal(@item.Id, '@item.Patient?.FullName')">
+                                                            📝 Lập bệnh án
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (isDoctor)
+{
+    <div class="modal fade" id="medicalRecordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border-radius: 15px;">
+                <form action="/Home/LuuBenhAn" method="post">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title fw-bold">📝 Lập Bệnh Án Điện Tử (Chuẩn OpenHealth)</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <input type="hidden" id="appointmentId" name="AppointmentId" />
+                        <div class="mb-3">
+                            <label class="fw-bold">Bệnh nhân:</label>
+                            <input type="text" id="patientNameDisplay" class="form-control-plaintext fw-bold fs-5 text-primary" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Chẩn đoán (Diagnosis)</label>
+                            <textarea name="Diagnosis" class="form-control" rows="3" placeholder="Ví dụ: Viêm dạ dày cấp tính..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Đơn thuốc (Prescription)</label>
+                            <textarea name="Prescription" class="form-control" rows="4" placeholder="1. Paracetamol 500mg..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ghi chú của bác sĩ</label>
+                            <textarea name="Notes" class="form-control" rows="2" placeholder="Hẹn tái khám..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-info text-white fw-bold">Lưu Vào Hồ Sơ Gốc</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script>
+    @if (isDoctor)
+    {
+        <text>
+        function showMedicalRecordModal(id, name) {
+            document.getElementById('appointmentId').value = id;
+            document.getElementById('patientNameDisplay').value = name;
+            var myModal = new bootstrap.Modal(document.getElementById('medicalRecordModal'));
+            myModal.show();
+        }
+        </text>
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            locale: 'vi',
+            slotMinTime: '07:00:00',
+            slotMaxTime: '18:00:00',
+            allDaySlot: false,
+            events: [
+                // CẬP NHẬT: LỌC BỎ CÁC LỊCH ĐÃ BỊ TỪ CHỐI KHỎI CALENDAR
+                @foreach(var item in Model)
+                {
+                    if (item.Status != "Từ chối")
+                    {
+                        <text>
+                        {
+                            title: '#@item.Id - @item.Patient?.FullName (@item.Symptoms)',
+                            start: '@item.AppointmentDate.ToString("yyyy-MM-ddTHH:mm:00")',
+                            end: '@item.AppointmentDate.AddMinutes(30).ToString("yyyy-MM-ddTHH:mm:00")',
+                            color: '@(item.Status == "Chờ xác nhận" ? "#ffc107" : "#198754")',
+                            textColor: '@(item.Status == "Chờ xác nhận" ? "#000" : "#fff")'
+                        },
+                        </text>
+                    }
+                }
+            ]
+        });
+        
+        var tabEls = document.querySelectorAll('button[data-bs-toggle="tab"]');
+        tabEls.forEach(function(tab) {
+            tab.addEventListener('shown.bs.tab', function (event) {
+                if(event.target.id === 'calendar-tab') {
+                    calendar.render();
+                }
+            });
+        });
+        calendar.render();
+    });
+</script>

@@ -1,0 +1,64 @@
+@model List<QuanLyPhongKham.Models.Doctor>
+@{
+    ViewData["Title"] = "Đội ngũ bác sĩ";
+    ViewData["Active"] = "bacsi";
+    Layout = "_PageLayout";
+
+    string SpecVi(string s) => s switch {
+        "TimMach"  => "Nội Tim Mạch",
+        "TieuHoa"  => "Nội Tiêu Hóa",
+        "CXK" or "CoXuongKhop" => "Cơ Xương Khớp",
+        "ThanKinh" => "Thần Kinh",
+        "HoHap"    => "Hô Hấp",
+        "DaKhoa"   => "Đa Khoa",
+        _ => string.IsNullOrEmpty(s) ? "Đa Khoa" : s
+    };
+    string Initials(string name) {
+        var p = (name ?? "").Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (p.Length == 0) return "BS";
+        return p.Length == 1 ? p[0][..1].ToUpper() : (p[^2][..1] + p[^1][..1]).ToUpper();
+    }
+}
+
+<section class="hero-banner" style="background-image:url('https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=1600')">
+    <div class="hb-inner">
+        <div class="breadcrumb"><a href="/">Trang chủ</a> › <span>Bác sĩ</span></div>
+        <h1>Đội ngũ bác sĩ hàng đầu</h1>
+        <p>@(Model?.Count ?? 0) chuyên gia giàu kinh nghiệm, tận tâm, đồng hành cùng sức khỏe của bạn.</p>
+        <a class="hero-cta" href="/"><i data-lucide="calendar-plus" style="width:17px;height:17px"></i> Đặt lịch với bác sĩ</a>
+    </div>
+</section>
+
+<div class="container">
+    <div class="sec-head">
+        <h2>Bác sĩ chuyên khoa</h2>
+        <p>Chọn bác sĩ phù hợp và đặt lịch khám trực tuyến chỉ trong vài bước.</p>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <p style="text-align:center;color:var(--muted)">Chưa có dữ liệu bác sĩ.</p>
+    }
+    else
+    {
+        <div class="grid-3">
+            @foreach (var d in Model)
+            {
+                var rating = (4.7 + (d.Id % 4) * 0.1).ToString("0.0");
+                var exp = 8 + (d.Id * 3 % 18);
+                <div class="doc-card">
+                    <div class="doc-banner">
+                        <div class="doc-avatar">@Initials(d.FullName)</div>
+                    </div>
+                    <div class="doc-body">
+                        <h3>BS. @d.FullName</h3>
+                        <div class="doc-rate">★★★★★ @rating</div>
+                        <div class="doc-exp">@exp năm kinh nghiệm</div>
+                        <span class="doc-spec">@SpecVi(d.Specialty)</span>
+                        <a class="doc-btn" href="/">Đặt lịch khám</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

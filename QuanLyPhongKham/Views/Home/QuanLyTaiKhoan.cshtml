@@ -1,0 +1,121 @@
+@model List<QuanLyPhongKham.Models.Account>
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+    ViewData["Active"] = "accounts";
+    Layout = "_AdminLayout";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;padding:13px 18px;margin-bottom:18px;color:#065F46;font-size:13.5px;display:flex;align-items:center;gap:8px">
+        <i data-lucide="check-circle" style="width:18px;height:18px;stroke:#16a34a"></i> @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div style="background:#fff1f0;border:1px solid #fca5a5;border-radius:12px;padding:13px 18px;margin-bottom:18px;color:#dc2626;font-size:13.5px;display:flex;align-items:center;gap:8px">
+        <i data-lucide="x-circle" style="width:18px;height:18px;stroke:#dc2626"></i> @TempData["Error"]
+    </div>
+}
+
+<div style="display:grid;grid-template-columns:1fr 380px;gap:22px;align-items:start">
+
+    <!-- Bảng tài khoản -->
+    <div class="adm-card" style="overflow:hidden">
+        <div style="padding:18px 22px;border-bottom:1px solid #eef3fa;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700">
+            <i data-lucide="list" style="width:18px;height:18px;stroke:#1057a4;stroke-width:2"></i>
+            Tất cả tài khoản
+            <span style="margin-left:auto;font-size:12px;font-weight:600;color:#94a3b8">@Model.Count tài khoản</span>
+        </div>
+        <table class="adm-table">
+            <thead>
+                <tr><th>Tài khoản</th><th>Họ tên</th><th>Vai trò</th><th style="text-align:right">Thao tác</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var acc in Model)
+                {
+                    var rc = acc.Role == "Admin" ? "#7c3aed" : acc.Role == "Doctor" ? "#1057a4" : "#00b896";
+                    var rb = acc.Role == "Admin" ? "#f5f3ff" : acc.Role == "Doctor" ? "#eaf2ff" : "#f0fdf4";
+                    <tr>
+                        <td>
+                            <div style="font-weight:600">@acc.Username</div>
+                            <div style="font-size:11px;color:#94a3b8">#@acc.Id @(string.IsNullOrEmpty(acc.Email) ? "" : "· " + acc.Email)</div>
+                        </td>
+                        <td>@acc.FullName</td>
+                        <td><span class="badge" style="background:@rb;color:@rc">@acc.Role</span></td>
+                        <td style="text-align:right">
+                            @if (acc.Role != "Admin")
+                            {
+                                <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap">
+                                    <form method="post" action="@Url.Action("ResetPassword")" style="display:flex;gap:4px"
+                                          onsubmit="return confirm('Reset mật khẩu cho @acc.Username?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@acc.Id">
+                                        <input type="text" name="newPassword" placeholder="Pass mới" required aria-label="Mật khẩu mới"
+                                               style="width:96px;padding:6px 9px;border:1px solid #d8e0ec;border-radius:8px;font-size:12px">
+                                        <button type="submit" title="Reset mật khẩu"
+                                                style="padding:6px 10px;background:#f59e0b;color:#fff;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center">
+                                            <i data-lucide="key-round" style="width:14px;height:14px;stroke:#fff"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post" action="@Url.Action("XoaTaiKhoan")" style="display:inline"
+                                          onsubmit="return confirm('Xóa tài khoản @acc.Username?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@acc.Id">
+                                        <button type="submit" title="Xóa tài khoản"
+                                                style="padding:6px 10px;background:#e11d48;color:#fff;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center">
+                                            <i data-lucide="trash-2" style="width:14px;height:14px;stroke:#fff"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <span style="font-size:12px;color:#cbd5e1">— Bảo vệ —</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Form tạo tài khoản -->
+    <div class="adm-card" style="padding:24px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;margin-bottom:18px">
+            <i data-lucide="user-plus" style="width:18px;height:18px;stroke:#00b896;stroke-width:2"></i> Tạo tài khoản mới
+        </div>
+        <form method="post" action="@Url.Action("TaoTaiKhoan")">
+            @Html.AntiForgeryToken()
+            @{
+                var lbl = "font-size:12.5px;font-weight:600;color:#475569;display:block;margin-bottom:5px";
+                var inp = "width:100%;padding:10px 12px;border:1.5px solid #d8e0ec;border-radius:10px;font-size:13.5px;box-sizing:border-box;font-family:inherit";
+            }
+            <div style="margin-bottom:14px">
+                <label style="@lbl">Vai trò</label>
+                <select name="Role" required aria-label="Vai trò" style="@inp">
+                    <option value="Doctor">👨‍⚕️ Bác sĩ (Doctor)</option>
+                    <option value="Patient">🙋 Bệnh nhân (Patient)</option>
+                    <option value="Admin">⚙️ Quản trị (Admin)</option>
+                </select>
+            </div>
+            <div style="margin-bottom:14px">
+                <label style="@lbl">Tên đăng nhập</label>
+                <input type="text" name="Username" required placeholder="vd: bacsi_nguyen" aria-label="Tên đăng nhập" style="@inp">
+            </div>
+            <div style="margin-bottom:14px">
+                <label style="@lbl">Mật khẩu</label>
+                <input type="password" name="Password" required placeholder="Tối thiểu 6 ký tự" aria-label="Mật khẩu" style="@inp">
+            </div>
+            <div style="margin-bottom:14px">
+                <label style="@lbl">Họ tên đầy đủ</label>
+                <input type="text" name="FullName" required placeholder="vd: BS. Nguyễn Văn A" aria-label="Họ tên" style="@inp">
+            </div>
+            <div style="margin-bottom:18px">
+                <label style="@lbl">Email</label>
+                <input type="email" name="Email" placeholder="vd: bacsi@gmail.com" aria-label="Email" style="@inp">
+            </div>
+            <button type="submit" class="btn-pri" style="width:100%">Tạo tài khoản</button>
+        </form>
+    </div>
+</div>

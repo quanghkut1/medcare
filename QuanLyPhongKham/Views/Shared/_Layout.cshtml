@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cổng Y Tế Thông Minh</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #1E293B; }
+        .navbar { background-color: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(10px); border-bottom: 1px solid #E2E8F0; }
+        .btn-modern { border-radius: 12px; font-weight: 600; padding: 10px 24px; transition: all 0.3s ease; }
+        .btn-brand { background-color: #4F46E5; color: white; border: none; }
+        .btn-brand:hover { background-color: #4338CA; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
+        .card-modern { border: none; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); background: #ffffff; }
+    </style>
+</head>
+<body>
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg py-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="/phongkham_v6_final.html">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                        <i class="bi bi-heart-pulse fs-5"></i>
+                    </div>
+                    <span class="fs-4 fw-bolder" style="color: #0F172A; letter-spacing: -0.5px;">Med<span class="text-primary">Care</span></span>
+                </a>
+                
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto fw-medium text-secondary">
+                        <li class="nav-item"><a class="nav-link px-3" href="/phongkham_v6_final.html">Trang chủ</a></li>
+                        
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <li class="nav-item"><a class="nav-link px-3 text-primary fw-bold" asp-controller="Home" asp-action="DanhSachLichHen">Quản lý (Bác sĩ)</a></li>
+                        }
+                        else if (User.IsInRole("Patient"))
+                        {
+                            <li class="nav-item"><a class="nav-link px-3 text-primary fw-bold" asp-controller="Home" asp-action="DanhSachLichHen">Lịch khám của tôi</a></li>
+                        }
+                    </ul>
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <span class="text-muted fw-medium"><i class="bi bi-person-circle"></i> @User.Identity?.Name</span>
+                            <a asp-controller="Auth" asp-action="Logout" class="btn btn-outline-danger btn-modern py-2 px-3">Đăng xuất</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Auth" asp-action="Login" class="text-decoration-none fw-bold text-dark me-2">Đăng nhập</a>
+                            <a asp-controller="Auth" asp-action="Login" class="btn btn-brand btn-modern">Đăng ký ngay</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid p-0">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <div class="chat-widget">
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">
+                <div><h5 class="mb-0 text-white" style="font-size: 16px;">✨ Trợ Lý Y Tế AI</h5></div>
+                <button class="close-chat" id="closeChat">&times;</button>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="chat-message message-ai">Xin chào! Tôi là Trợ lý AI của phòng khám. Bạn cần tư vấn gì ạ?</div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Nhập câu hỏi...">
+                <button class="send-btn" id="sendChat">Gửi</button>
+            </div>
+        </div>
+        <button class="chat-button" id="openChat">💬</button>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('openChat').addEventListener('click', function() { document.getElementById('chatBox').style.display = 'flex'; this.style.display = 'none'; });
+        document.getElementById('closeChat').addEventListener('click', function() { document.getElementById('chatBox').style.display = 'none'; document.getElementById('openChat').style.display = 'flex'; });
+        document.getElementById('sendChat').addEventListener('click', sendMessage);
+        document.getElementById('chatInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') sendMessage(); });
+        
+        function sendMessage() {
+            const inputField = document.getElementById('chatInput');
+            const message = inputField.value.trim();
+            if (message === '') return;
+
+            const chatBody = document.getElementById('chatBody');
+            chatBody.innerHTML += `<div class="chat-message message-user">${message}</div>`;
+            inputField.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            const typingId = "typing-" + Date.now();
+            setTimeout(() => {
+                chatBody.innerHTML += `<div id="${typingId}" class="chat-message message-ai text-muted" style="background-color: transparent; font-size: 12px;"><em>AI đang phân tích...</em></div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 400);
+
+            setTimeout(() => {
+                document.getElementById(typingId).remove();
+                let reply = "";
+                const msg = message.toLowerCase();
+
+                if (msg.includes('đau ngực') || msg.includes('tim') || msg.includes('khó thở')) {
+                    reply = "🚩 <b>Cảnh báo:</b> Triệu chứng đau ngực liên quan đến tim mạch. Bạn nên chọn khoa <b>Nội Tim Mạch</b>.";
+                } else if (msg.includes('lịch trống') || msg.includes('giờ khám')) {
+                    reply = "🕒 Hiện tại các khung giờ ngày mai vẫn còn trống, bạn có thể chọn giờ tại Form đặt lịch.";
+                } else if (msg.includes('giá') || msg.includes('tiền')) {
+                    reply = "Phí khám lâm sàng là 200.000đ (chưa bao gồm xét nghiệm).";
+                } else {
+                    reply = "Tôi đã ghi nhận ý kiến của bạn. Bạn có thể nói rõ hơn về triệu chứng để tôi tư vấn không?";
+                }
+
+                chatBody.innerHTML += `<div class="chat-message message-ai">${reply}</div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

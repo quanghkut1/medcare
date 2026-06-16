@@ -1,0 +1,69 @@
+@{
+    ViewData["Title"] = "Liên hệ";
+    ViewData["Active"] = "lienhe";
+    Layout = "_PageLayout";
+}
+
+<section class="hero-banner" style="background-image:url('https://images.pexels.com/photos/247786/pexels-photo-247786.jpeg?auto=compress&cs=tinysrgb&w=1600')">
+    <div class="hb-inner">
+        <div class="breadcrumb"><a href="/">Trang chủ</a> › <span>Liên hệ</span></div>
+        <h1>Liên hệ với MedCare</h1>
+        <p>Mọi thắc mắc về dịch vụ, đặt lịch hay hợp tác — đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng.</p>
+        <a class="hero-cta" href="tel:19001234"><i data-lucide="phone-call" style="width:17px;height:17px"></i> Gọi 1900-1234</a>
+    </div>
+</section>
+
+<div class="container">
+    <div class="grid-2" style="align-items:start;gap:28px">
+
+        <!-- Cột trái: Bản đồ + thông tin -->
+        <div>
+            <div style="border-radius:18px;overflow:hidden;border:1px solid rgba(16,24,40,.07);box-shadow:0 2px 10px rgba(16,24,40,.04);margin-bottom:22px">
+                <iframe title="Bản đồ MedCare" width="100%" height="280" style="border:0;display:block" loading="lazy"
+                    src="https://maps.google.com/maps?q=Quan%201%20Ho%20Chi%20Minh&z=14&output=embed"></iframe>
+            </div>
+
+            @{
+                var rows = new[] {
+                    new { Ic="phone-call", Bg="#fff0f0", C="#be123c", T="Hotline cấp cứu 24/7", V="1900 - 1234" },
+                    new { Ic="mail",       Bg="#eff6ff", C="#2563eb", T="Email",                V="support@medcare.vn" },
+                    new { Ic="map-pin",    Bg="#f0fdf4", C="#15803d", T="Địa chỉ",              V="123 Đường Sức Khoẻ, Quận 1, TP. Hồ Chí Minh" },
+                    new { Ic="clock",      Bg="#fff7ed", C="#c2410c", T="Giờ làm việc",         V="T2–T7: 7:00–20:00 · CN: 8:00–12:00" },
+                };
+            }
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                @foreach (var r in rows)
+                {
+                    <div style="background:#fff;border:1px solid rgba(16,24,40,.07);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+                        <span style="width:42px;height:42px;border-radius:11px;background:@r.Bg;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i data-lucide="@r.Ic" style="width:19px;height:19px;stroke:@r.C;stroke-width:2"></i>
+                        </span>
+                        <div>
+                            <div style="font-weight:600;color:var(--txt);font-size:13.5px">@r.T</div>
+                            <div style="color:var(--muted);font-size:13px;margin-top:2px">@r.V</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Cột phải: Form -->
+        <div style="background:#fff;border:1px solid rgba(16,24,40,.07);border-radius:18px;padding:28px;box-shadow:0 2px 10px rgba(16,24,40,.04)">
+            <h2 style="font-family:'Fraunces',serif;font-size:24px;color:var(--txt);margin-bottom:6px">Gửi tin nhắn</h2>
+            <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Để lại lời nhắn, chúng tôi sẽ phản hồi trong 24 giờ.</p>
+            <form onsubmit="alert('Cảm ơn bạn! Đây là form demo — vui lòng gọi 1900-1234 để được hỗ trợ ngay.');return false">
+                @{
+                    var lbl = "font-size:13px;font-weight:600;color:var(--txt);display:block;margin-bottom:6px";
+                    var inp = "width:100%;padding:12px 14px;margin-bottom:16px;border:1.5px solid var(--border);border-radius:11px;font-family:inherit;font-size:14px;box-sizing:border-box";
+                }
+                <label style="@lbl">Họ tên</label>
+                <input type="text" required placeholder="Nguyễn Văn A" aria-label="Họ tên" style="@inp" />
+                <label style="@lbl">Email / Số điện thoại</label>
+                <input type="text" required placeholder="email@gmail.com" aria-label="Email hoặc số điện thoại" style="@inp" />
+                <label style="@lbl">Nội dung</label>
+                <textarea required rows="5" placeholder="Nội dung cần hỗ trợ…" aria-label="Nội dung" style="@(inp); resize:vertical"></textarea>
+                <button type="submit" style="width:100%;padding:13px;background:var(--blue);color:#fff;border:none;border-radius:11px;font-weight:700;font-family:inherit;font-size:15px;cursor:pointer">Gửi liên hệ</button>
+            </form>
+        </div>
+    </div>
+</div>

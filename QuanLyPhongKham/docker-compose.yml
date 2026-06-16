@@ -1,0 +1,43 @@
+# MedCare — chạy app (ASP.NET Core) + PostgreSQL bằng 1 lệnh:  docker compose up --build
+# Bí mật (API key, email) lấy từ biến môi trường / file .env — KHÔNG hardcode.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: medcare
+      POSTGRES_USER: medcare
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-medcare_pw}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medcare"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      DatabaseProvider: Postgres
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=medcare;Username=medcare;Password=${DB_PASSWORD:-medcare_pw}"
+      AnthropicApiKey: ${ANTHROPIC_API_KEY}
+      EmailSettings__FromEmail: ${EMAIL_FROM}
+      EmailSettings__AppPassword: ${EMAIL_PW}
+      PaymentSettings__BankAccount: ${BANK_ACCOUNT:-0123456789}
+      PaymentSettings__BankOwner: ${BANK_OWNER:-PHONG KHAM MEDCARE}
+    ports:
+      - "8080:8080"
+    volumes:
+      - applogs:/app/logs
+      - dpkeys:/app/keys
+
+volumes:
+  pgdata:
+  applogs:
+  dpkeys:

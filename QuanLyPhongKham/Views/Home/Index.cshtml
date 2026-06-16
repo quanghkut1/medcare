@@ -1,0 +1,193 @@
+﻿@{
+    ViewData["Title"] = "Đặt Lịch Khám Thông Minh";
+}
+
+<div class="position-relative overflow-hidden" style="padding: 80px 0 100px 0;">
+    <div class="position-absolute top-0 start-0 translate-middle bg-primary rounded-circle" style="width: 400px; height: 400px; opacity: 0.05; filter: blur(50px);"></div>
+    <div class="position-absolute bottom-0 end-0 translate-middle bg-info rounded-circle" style="width: 300px; height: 300px; opacity: 0.08; filter: blur(40px);"></div>
+
+    <div class="container position-relative z-1">
+        
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm mb-5 border-0" role="alert" style="background: #ECFDF5; color: #065F46;">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="row align-items-center">
+            
+            <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
+                <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold mb-3 border border-primary-subtle">
+                    <i class="bi bi-stars"></i> Hệ thống tích hợp AI 2026
+                </div>
+                <h1 class="display-4 fw-bolder mb-4" style="color: #0F172A; letter-spacing: -1px; line-height: 1.2;">
+                    Chăm sóc sức khỏe <br/>
+                    <span style="color: #4F46E5;">Thông minh hơn.</span>
+                </h1>
+                <p class="fs-5 text-secondary mb-4" style="line-height: 1.6;">
+                    Trải nghiệm hệ thống đặt lịch y tế thế hệ mới. Trí tuệ nhân tạo sẽ phân tích triệu chứng và giúp bạn tìm đúng bác sĩ chuyên khoa chỉ trong 30 giây.
+                </p>
+                
+                <div class="d-flex flex-column gap-3 mt-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white text-success rounded-circle p-2 shadow-sm me-3"><i class="bi bi-robot fs-5"></i></div>
+                        <h6 class="mb-0 fw-bold">AI phân tích triệu chứng tự động</h6>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white text-primary rounded-circle p-2 shadow-sm me-3"><i class="bi bi-calendar-check fs-5"></i></div>
+                        <h6 class="mb-0 fw-bold">Chủ động chọn giờ khám trực tuyến</h6>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white text-info rounded-circle p-2 shadow-sm me-3"><i class="bi bi-journal-medical fs-5"></i></div>
+                        <h6 class="mb-0 fw-bold">Bệnh án điện tử chuẩn OpenHealth</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card-modern p-4 p-md-5 position-relative">
+                    <h3 class="fw-bolder mb-4 text-center">Đặt lịch khám ngay</h3>
+                    
+                    <form method="post" action="/Home/DatLich">
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary small text-uppercase tracking-wider">Mô tả triệu chứng</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 rounded-start-4"><i class="bi bi-activity text-muted"></i></span>
+                                <textarea id="txtSymptom" name="trieuChung" class="form-control bg-light border-start-0 rounded-end-4" rows="2" placeholder="Ví dụ: Đau tức ngực, khó thở..." required></textarea>
+                            </div>
+                            <button id="btnAiSuggest" type="button" class="btn btn-sm mt-2 w-100 rounded-pill" style="background-color: #EEF2FF; color: #4F46E5; font-weight: 600; border: 1px dashed #C7D2FE;">
+                                ✨ Phân tích bằng AI
+                            </button>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary small text-uppercase">Chuyên khoa</label>
+                            <select id="cbSpecialty" name="chuyenKhoa" class="form-select bg-light rounded-3 py-2 border-0" required>
+                                <option value="">-- Chọn chuyên khoa --</option>
+                                <option value="TimMach">Nội Tim Mạch</option>
+                                <option value="TieuHoa">Nội Tiêu Hóa</option>
+                                <option value="CoXuongKhop">Cơ Xương Khớp</option>
+                            </select>
+                            <div id="aiResult" class="form-text text-success mt-2 fw-bold" style="display: none;"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 mb-4">
+                                <label class="form-label fw-bold text-secondary small text-uppercase">Ngày khám</label>
+                                <input type="date" name="ngayHen" class="form-control bg-light rounded-3 py-2 border-0" required min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <label class="form-label fw-bold text-secondary small text-uppercase">Khung giờ</label>
+                                <select name="gioHen" class="form-select bg-light rounded-3 py-2 border-0" required>
+                                    <option value="08:00">08:00 AM</option>
+                                    <option value="09:00">09:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="14:00">02:00 PM</option>
+                                    <option value="15:00">03:00 PM</option>
+                                    <option value="16:00">04:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-brand btn-modern w-100 py-3 fs-5 shadow">
+                            XÁC NHẬN ĐẶT LỊCH
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Kịch bản AI Gợi ý chuyên khoa
+    document.getElementById('btnAiSuggest').addEventListener('click', function(e) {
+        e.preventDefault(); 
+        const symptomText = document.getElementById('txtSymptom').value.toLowerCase();
+        const aiResultBox = document.getElementById('aiResult');
+        const specialtySelect = document.getElementById('cbSpecialty');
+
+        if(symptomText.trim() === '') {
+            alert('Vui lòng nhập triệu chứng để AI phân tích!');
+            return;
+        }
+
+        const originalBtnText = this.innerHTML;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang phân tích...';
+        this.disabled = true;
+
+        setTimeout(() => {
+            let suggestedValue = "";
+            let aiMessage = "";
+
+            if(symptomText.includes('ngực') || symptomText.includes('tim') || symptomText.includes('thở')) {
+                suggestedValue = "TimMach";
+                aiMessage = "💡 AI nhận diện: Hệ tim mạch";
+            } else if (symptomText.includes('bụng') || symptomText.includes('dạ dày') || symptomText.includes('ăn')) {
+                suggestedValue = "TieuHoa";
+                aiMessage = "💡 AI nhận diện: Hệ tiêu hóa";
+            } else {
+                suggestedValue = "CoXuongKhop";
+                aiMessage = "💡 AI nhận diện: Hệ cơ xương khớp";
+            }
+
+            specialtySelect.value = suggestedValue;
+            aiResultBox.innerHTML = '<i class="bi bi-check2-circle"></i> ' + aiMessage;
+            aiResultBox.style.display = 'block';
+            this.innerHTML = originalBtnText;
+            this.disabled = false;
+        }, 800); 
+    });
+
+    // 2. Kịch bản Khóa giờ khám trong quá khứ
+    function updateAvailableTimeSlots() {
+        const dateInput = document.querySelector('input[name="ngayHen"]');
+        const timeSelect = document.querySelector('select[name="gioHen"]');
+        
+        if (!dateInput || !timeSelect) return;
+
+        const selectedDate = new Date(dateInput.value);
+        const now = new Date();
+
+        // Xóa trạng thái disable và chữ "Đã qua" cũ
+        Array.from(timeSelect.options).forEach(opt => {
+            opt.disabled = false;
+            opt.innerHTML = opt.innerHTML.replace(' (Đã qua)', '');
+        });
+
+        // Xóa option báo hết giờ nếu có
+        const existingOut = timeSelect.querySelector('option[value="out"]');
+        if (existingOut) existingOut.remove();
+
+        // Chỉ kiểm tra nếu người dùng chọn ngày hôm nay
+        if (selectedDate.toDateString() === now.toDateString()) {
+            const currentHour = now.getHours();
+            let hasAvailableSlot = false;
+
+            Array.from(timeSelect.options).forEach(opt => {
+                const optHour = parseInt(opt.value.split(':')[0], 10);
+                
+                if (optHour <= currentHour) {
+                    opt.disabled = true;
+                    opt.innerHTML += ' (Đã qua)';
+                } else {
+                    if (!hasAvailableSlot) {
+                        timeSelect.value = opt.value; // Tự chọn giờ trống gần nhất
+                        hasAvailableSlot = true;
+                    }
+                }
+            });
+
+            if (!hasAvailableSlot) {
+                timeSelect.innerHTML += '<option value="out" disabled selected>Đã hết giờ khám hôm nay</option>';
+            }
+        }
+    }
+
+    document.querySelector('input[name="ngayHen"]').addEventListener('change', updateAvailableTimeSlots);
+    document.addEventListener('DOMContentLoaded', updateAvailableTimeSlots);
+</script>

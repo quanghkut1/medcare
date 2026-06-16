@@ -1,0 +1,57 @@
+@{ ViewData["Title"] = "Đăng Nhập Hệ Thống"; }
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                <div class="card-body p-5">
+                    <h3 class="text-center fw-bold mb-2" style="color: #1a237e;">Medical Clinic Management</h3>
+<p class="text-center text-muted small mb-4">Operations System with AI-Enhanced Decision Support</p>
+                    
+                    <ul class="nav nav-pills nav-justified mb-4" id="pills-tab" role="tablist">
+                        <li class="nav-item"><button class="nav-link active fw-bold" data-bs-toggle="pill" data-bs-target="#login">Đăng Nhập</button></li>
+                        <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill" data-bs-target="#register">Đăng Ký</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="login">
+                            <form method="post" action="/Auth/Login">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Bạn là ai?</label>
+                                    <select name="role" class="form-select border-primary">
+                                        <option value="Patient">Tôi là Bệnh Nhân</option>
+                                        <option value="Doctor">Tôi là Bác Sĩ</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Tài khoản</label>
+                                    <input type="text" name="username" class="form-control" placeholder="Tên đăng nhập" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="fw-bold">Mật khẩu</label>
+                                    <input type="password" name="password" class="form-control" placeholder="*******" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">XÁC NHẬN VÀO HỆ THỐNG</button>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="register">
+                            <form method="post" action="/Auth/Register">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Đăng ký với vai trò:</label>
+                                    <select name="Role" class="form-select border-success">
+                                        <option value="Patient">Bệnh Nhân (Khám bệnh)</option>
+                                        <option value="Doctor">Bác Sĩ (Quản lý lịch)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3"><input type="text" name="FullName" class="form-control" placeholder="Họ và tên" required></div>
+                                <div class="mb-3"><input type="text" name="Username" class="form-control" placeholder="Tên đăng nhập mới" required></div>
+                                <div class="mb-3"><input type="password" name="Password" class="form-control" placeholder="Mật khẩu" required></div>
+                                <button type="submit" class="btn btn-success w-100 py-2 fw-bold">TẠO TÀI KHOẢN MỚI</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

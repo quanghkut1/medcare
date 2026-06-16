@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Tin tức y tế";
+    ViewData["Active"] = "tintuc";
+    Layout = "_PageLayout";
+}
+
+<section class="hero-banner" style="background-image:url('https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=1600')">
+    <div class="hb-inner">
+        <div class="breadcrumb"><a href="/">Trang chủ</a> › <span>Tin tức</span></div>
+        <h1>Tin tức Y tế &amp; Sức khoẻ</h1>
+        <p>Thông tin sức khoẻ mới nhất, cập nhật tự động từ nguồn uy tín (VnExpress – Sức khoẻ).</p>
+        <a class="hero-cta" href="https://vnexpress.net/suc-khoe" target="_blank" rel="noopener"><i data-lucide="external-link" style="width:17px;height:17px"></i> Xem thêm tại VnExpress</a>
+    </div>
+</section>
+
+<div class="container">
+    <div class="sec-head">
+        <h2>Bài viết mới nhất</h2>
+        <p>Kiến thức y khoa, phòng bệnh và chăm sóc sức khoẻ thường thức.</p>
+    </div>
+    <div id="news-list" class="grid-3">
+        <p style="grid-column:1/-1;text-align:center;color:var(--muted)">Đang tải tin tức…</p>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    (async function () {
+        const wrap = document.getElementById("news-list");
+        const esc = s => (s || "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
+        try {
+            const res = await fetch("/api/news?count=12");
+            const data = await res.json();
+            const items = (data && data.items) || [];
+            if (!items.length) { wrap.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:var(--muted)'>Hiện chưa lấy được tin. Vui lòng thử lại sau.</p>"; return; }
+            wrap.innerHTML = items.map(n => {
+                const mins = Math.max(2, Math.round((n.description || "").length / 55));
+                const date = (n.pubDate || "").replace(/\s\+\d+$/, "");
+                return `
+                <a class="news-card" href="${esc(n.link)}" target="_blank" rel="noopener">
+                    <div class="news-thumb">
+                        ${n.thumbnail ? `<img src="${esc(n.thumbnail)}" alt="" loading="lazy"/>` : ``}
+                        <span class="news-tag">Sức khỏe</span>
+                    </div>
+                    <div class="news-body">
+                        <h3>${esc(n.title)}</h3>
+                        <p>${esc(n.description)}</p>
+                        <div class="news-meta">
+                            <span>⏱ ${mins} phút đọc</span>
+                            <span>🗓 ${esc(date)}</span>
+                        </div>
+                    </div>
+                </a>`;
+            }).join("");
+        } catch (e) {
+            wrap.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:var(--muted)'>Lỗi tải tin tức.</p>";
+        }
+    })();
+</script>
+}

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /$
+Allow: /phongkham_v6_final.html
+# Không cho bot lập chỉ mục khu vực nội bộ
+Disallow: /api/
+Disallow: /Home/AdminDashboard
+Disallow: /QuanLyTaiKhoan
+Disallow: /Home/DanhSachLichHen
+Disallow: /Auth/
+
+Sitemap: https://medcare.example.com/sitemap.xml

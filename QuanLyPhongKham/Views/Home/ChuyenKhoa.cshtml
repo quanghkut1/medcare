@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Chuyên khoa";
+    ViewData["Active"] = "chuyenkhoa";
+    Layout = "_PageLayout";
+
+    var specs = new[] {
+        new { Icon="heart-pulse", Bg="#fff0f0", Color="#be123c", Name="Nội Tim Mạch", Docs="6", Exams="15.200",
+              Desc="Chẩn đoán và điều trị bệnh lý tim mạch, huyết áp, rối loạn nhịp, suy tim, mạch vành." },
+        new { Icon="activity", Bg="#fff7ed", Color="#c2410c", Name="Nội Tiêu Hóa", Docs="4", Exams="11.800",
+              Desc="Điều trị bệnh dạ dày, đại tràng, gan mật, viêm loét, rối loạn tiêu hoá mạn tính." },
+        new { Icon="bone", Bg="#f0fdf4", Color="#15803d", Name="Cơ Xương Khớp", Docs="5", Exams="9.400",
+              Desc="Điều trị đau lưng, thoái hoá khớp, cổ vai gáy, viêm khớp và bệnh xương khớp mạn." },
+        new { Icon="brain", Bg="#faf5ff", Color="#9333ea", Name="Thần Kinh", Docs="3", Exams="7.100",
+              Desc="Khám và điều trị đau đầu, mất ngủ, rối loạn tiền đình, tai biến và bệnh thần kinh." },
+        new { Icon="wind", Bg="#ecfeff", Color="#0e7490", Name="Hô Hấp", Docs="4", Exams="8.600",
+              Desc="Điều trị viêm phổi, hen suyễn, viêm phế quản, COPD và bệnh đường hô hấp." },
+        new { Icon="stethoscope", Bg="#eff6ff", Color="#2563eb", Name="Đa Khoa", Docs="8", Exams="21.500",
+              Desc="Khám tổng quát, sàng lọc bệnh định kỳ và tư vấn sức khoẻ toàn diện mọi lứa tuổi." },
+    };
+}
+
+<section class="hero-banner" style="background-image:url('https://images.pexels.com/photos/7659564/pexels-photo-7659564.jpeg?auto=compress&cs=tinysrgb&w=1600')">
+    <div class="hb-inner">
+        <div class="breadcrumb"><a href="/">Trang chủ</a> › <span>Chuyên khoa</span></div>
+        <h1>Hệ thống chuyên khoa toàn diện</h1>
+        <p>6 chuyên khoa mũi nhọn với đội ngũ bác sĩ giàu kinh nghiệm và trang thiết bị hiện đại, phục vụ chẩn đoán &amp; điều trị chính xác.</p>
+        <a class="hero-cta" href="/"><i data-lucide="calendar-plus" style="width:17px;height:17px"></i> Đặt lịch khám ngay</a>
+    </div>
+</section>
+
+<div class="container">
+    <div class="sec-head">
+        <h2>Các chuyên khoa tại MedCare</h2>
+        <p>Chọn chuyên khoa phù hợp để được tư vấn và đặt lịch với bác sĩ chuyên môn.</p>
+    </div>
+    <div class="grid-3">
+        @foreach (var s in specs)
+        {
+            <div class="spec-card">
+                <div class="spec-ic" style="background:@s.Bg">
+                    <i data-lucide="@s.Icon" style="width:27px;height:27px;stroke:@s.Color;stroke-width:1.9"></i>
+                </div>
+                <h3>@s.Name</h3>
+                <div class="spec-stats">
+                    <div><div class="n" style="color:@s.Color">@s.Docs</div><div class="l">Bác sĩ</div></div>
+                    <div><div class="n" style="color:@s.Color">@s.Exams</div><div class="l">Lượt khám</div></div>
+                </div>
+                <p>@s.Desc</p>
+                <a class="card-link" style="color:@s.Color" href="/">Đặt khám <i data-lucide="arrow-right" style="width:15px;height:15px"></i></a>
+            </div>
+        }
+    </div>
+</div>

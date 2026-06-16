@@ -1,0 +1,4588 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MedCare – Phòng Khám Đa Khoa Trực Tuyến</title>
+
+    <!-- ===== SEO ===== -->
+    <meta name="description" content="MedCare — Hệ thống quản lý phòng khám đa khoa: đặt lịch khám trực tuyến, hồ sơ bệnh án điện tử, tư vấn AI 24/7 và thanh toán VietQR. Tim mạch, Tiêu hóa, Cơ xương khớp, Thần kinh, Hô hấp, Đa khoa." />
+    <meta name="keywords" content="phòng khám, đặt lịch khám, hồ sơ bệnh án điện tử, tư vấn sức khỏe, MedCare, khám bệnh trực tuyến" />
+    <meta name="author" content="MedCare" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#1057a4" />
+
+    <!-- ===== Open Graph (Facebook/Zalo) ===== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MedCare" />
+    <meta property="og:title" content="MedCare – Phòng Khám Đa Khoa Trực Tuyến" />
+    <meta property="og:description" content="Đặt lịch khám trực tuyến, hồ sơ bệnh án điện tử và tư vấn AI 24/7 cùng đội ngũ bác sĩ chuyên khoa." />
+    <meta property="og:locale" content="vi_VN" />
+
+    <!-- ===== Twitter Card ===== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MedCare – Phòng Khám Đa Khoa Trực Tuyến" />
+    <meta name="twitter:description" content="Đặt lịch khám trực tuyến, hồ sơ bệnh án điện tử và tư vấn AI 24/7." />
+
+    <!-- ===== Favicon (SVG inline — chữ thập y tế) ===== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231057a4'/%3E%3Cpath d='M14 7h4v7h7v4h-7v7h-4v-7H7v-4h7z' fill='white'/%3E%3C/svg%3E" />
+
+    <!-- GSAP + ScrollTrigger (free since Webflow acquisition) — defer: không chặn render -->
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <!-- Lucide Icons (pinned trên jsdelivr — ổn định hơn unpkg @latest) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <!-- Spline viewer (chạy trong trang → ẩn được logo) -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
+
+    <!-- Fonts — tải KHÔNG chặn render (text hiện ngay bằng font dự phòng,
+         Fraunces/Be Vietnam Pro swap vào khi tải xong) → giảm mạnh LCP. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,700&display=swap&subset=latin,vietnamese"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,700&display=swap&subset=latin,vietnamese"
+      />
+    </noscript>
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://medcare.example.com/" />
+
+    <!-- Structured Data (JSON-LD) — giúp Google hiểu đây là phòng khám -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "MedicalClinic",
+        "name": "MedCare",
+        "description": "Hệ thống quản lý phòng khám đa khoa: đặt lịch trực tuyến, hồ sơ bệnh án điện tử, tư vấn AI 24/7 và thanh toán VietQR.",
+        "url": "https://medcare.example.com/",
+        "medicalSpecialty": ["Cardiovascular", "Gastroenterologic", "Musculoskeletal", "PrimaryCare"],
+        "availableService": [
+          { "@type": "MedicalProcedure", "name": "Khám Nội Tim Mạch" },
+          { "@type": "MedicalProcedure", "name": "Khám Nội Tiêu Hóa" },
+          { "@type": "MedicalProcedure", "name": "Khám Cơ Xương Khớp" },
+          { "@type": "MedicalProcedure", "name": "Khám Đa Khoa" }
+        ],
+        "openingHours": "Mo-Su 07:00-21:00"
+      }
+    </script>
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="css/styles.css?v=32" />
+  </head>
+
+  <body>
+    <!-- ══════════════════════════════════════
+     1. HEADER
+══════════════════════════════════════ -->
+    <header id="site-header">
+      <div class="hd-inner">
+        <a class="logo" href="#">
+          <div class="logo-mark">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+              />
+            </svg>
+          </div>
+          <span class="logo-text"><b>Med</b>Care</span>
+        </a>
+
+        <div class="hd-right">
+          <a class="hd-hotline" href="tel:19001234">
+            <div class="hd-hotline-dot"></div>
+            <i data-lucide="phone-call" style="width:14px;height:14px;stroke:#ef4444;stroke-width:2.2;flex-shrink:0"></i>
+            Cấp cứu: 1900-1234
+          </a>
+          <button class="btn-login" onclick="openLoginModal()">
+            Đăng nhập
+          </button>
+          <button class="btn-appt" onclick="openMultiStepBooking()">
+            <i data-lucide="calendar-plus" style="width:15px;height:15px;stroke:currentColor;stroke-width:2;flex-shrink:0"></i>
+            Đặt lịch ngay
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════
+     2. NAVIGATION
+══════════════════════════════════════ -->
+    <nav id="site-nav">
+      <div class="nav-inner">
+        <div class="nav-item">
+          <a href="#" class="nav-link active">Trang chủ</a>
+        </div>
+        <div class="nav-item">
+          <a href="/Home/ChuyenKhoa" class="nav-link"
+            >Chuyên khoa <span class="nav-chevron">▾</span></a
+          >
+          <div class="dropdown">
+            <a class="dd-item" href="#">
+              <span class="dd-ico" style="background:#fff0f0"><i data-lucide="heart-pulse" style="width:16px;height:16px;stroke:#e11d48;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Nội Tim Mạch</div><div style="font-size:11.5px;color:var(--muted)">3 bác sĩ</div></div>
+            </a>
+            <a class="dd-item" href="#">
+              <span class="dd-ico" style="background:#fff7ed"><i data-lucide="activity" style="width:16px;height:16px;stroke:#ea580c;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Nội Tiêu Hóa</div><div style="font-size:11.5px;color:var(--muted)">2 bác sĩ</div></div>
+            </a>
+            <a class="dd-item" href="#">
+              <span class="dd-ico" style="background:#f0fdf4"><i data-lucide="bone" style="width:16px;height:16px;stroke:#16a34a;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Cơ Xương Khớp</div><div style="font-size:11.5px;color:var(--muted)">2 bác sĩ</div></div>
+            </a>
+            <a class="dd-item" href="#">
+              <span class="dd-ico" style="background:#eff6ff"><i data-lucide="stethoscope" style="width:16px;height:16px;stroke:#2563eb;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Đa Khoa</div><div style="font-size:11.5px;color:var(--muted)">1 bác sĩ</div></div>
+            </a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a href="/Home/BacSi" class="nav-link"
+            >Bác sĩ <span class="nav-chevron">▾</span></a
+          >
+          <div class="dropdown">
+            <a class="dd-item" href="#">
+              <span class="dd-ico" style="background:#eff6ff"><i data-lucide="user-round" style="width:16px;height:16px;stroke:#2563eb;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Bác sĩ Mặc Định</div><div style="font-size:11.5px;color:var(--muted)">Đa Khoa</div></div>
+            </a>
+            <a class="dd-item" href="#">
+              <span class="dd-ico" style="background:#fff7ed"><i data-lucide="user-round" style="width:16px;height:16px;stroke:#ea580c;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Bác sĩ TieuHoa</div><div style="font-size:11.5px;color:var(--muted)">Tiêu Hóa</div></div>
+            </a>
+            <a class="dd-item" href="#">
+              <span class="dd-ico" style="background:#fff0f0"><i data-lucide="user-round" style="width:16px;height:16px;stroke:#e11d48;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Bác sĩ TimMach</div><div style="font-size:11.5px;color:var(--muted)">Tim Mạch</div></div>
+            </a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" onclick="openMultiStepBooking();return false">Đặt lịch</a>
+        </div>
+        <div class="nav-item">
+          <a href="/Home/TinTuc" class="nav-link"
+            >Tin tức <span class="nav-chevron">▾</span></a
+          >
+          <div class="dropdown">
+            <a class="dd-item" href="#" onclick="document.getElementById('news-section').scrollIntoView({behavior:'smooth'});return false">
+              <span class="dd-ico" style="background:#eff6ff"><i data-lucide="newspaper" style="width:16px;height:16px;stroke:#2563eb;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Tin y tế</div><div style="font-size:11px;color:var(--txt2)">Cập nhật từ VnExpress</div></div>
+            </a>
+            <a class="dd-item" href="https://vnexpress.net/suc-khoe" target="_blank" rel="noopener">
+              <span class="dd-ico" style="background:#f0fdf4"><i data-lucide="shield-plus" style="width:16px;height:16px;stroke:#16a34a;stroke-width:2"></i></span>
+              <div><div style="font-weight:600;font-size:13px;color:var(--txt)">Sức khoẻ cộng đồng</div><div style="font-size:11px;color:var(--txt2)">Xem thêm tại VnExpress</div></div>
+            </a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a href="/Home/LienHe" class="nav-link">Liên hệ</a>
+        </div>
+        <div class="nav-end">
+          <div class="nav-search-box">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              style="color: var(--hint)"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input type="text" placeholder="Tìm bác sĩ, dịch vụ…" aria-label="Tìm bác sĩ hoặc dịch vụ" />
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ══════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════ -->
+    <section id="hero">
+      <div class="hero-bg">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+      </div>
+
+      <!-- Hoạt cảnh 3D Spline (viên thuốc + DNA) — FULL màn hình hero -->
+      <div class="hero-3d hero-3d-full" aria-hidden="true">
+        <spline-viewer
+          data-url="https://prod.spline.design/Elbe0yL7AvGklNeg/scene.splinecode"
+        ></spline-viewer>
+      </div>
+
+      <!-- Lớp tối nhẹ để chữ trên nền 3D vẫn đọc rõ -->
+      <div class="hero-scrim" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <div class="hero-badge">
+          <div class="badge-dot"></div>
+          Hệ thống quản lý phòng khám hiện đại
+        </div>
+
+        <h1 class="hero-title">
+          Chăm sóc sức khoẻ<br />
+          <em>đúng lúc, đúng nơi</em>
+        </h1>
+
+        <p class="hero-sub">
+          Đặt lịch khám trực tuyến, theo dõi hồ sơ bệnh án và nhận tư vấn từ đội
+          ngũ bác sĩ chuyên khoa — mọi lúc, mọi nơi.
+        </p>
+
+        <!-- Hero Search (AI) -->
+        <div class="hero-search">
+          <div class="hs-info">
+            <div class="hs-credit">
+              <div class="hs-credit-dot"></div>
+              <span>Hệ thống hỗ trợ bởi AI · BS. Phạm Nhật Quang</span>
+            </div>
+            <div class="hs-ai">
+              <span>✨</span>
+              <span>Powered by AI</span>
+            </div>
+          </div>
+          <div class="hs-main">
+            <input
+              type="text"
+              id="hero-search-input"
+              placeholder="Nhập triệu chứng hoặc tên bác sĩ cần tìm…"
+              aria-label="Tìm kiếm triệu chứng hoặc bác sĩ"
+              oninput="updateHeroCount()"
+            />
+            <button class="hs-submit" onclick="heroSearch()" aria-label="Tìm kiếm">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 21l21-9L2 3v7l15 2-15 2z" />
+              </svg>
+            </button>
+          </div>
+          <div class="hs-footer">
+            <div class="hs-actions">
+              <button class="hs-act-btn" onclick="openMultiStepBooking()">
+                📅 Đặt lịch nhanh
+              </button>
+              <button
+                class="hs-act-btn"
+                onclick="
+                  document
+                    .getElementById('ai-form')
+                    .scrollIntoView({ behavior: 'smooth' })
+                "
+              >
+                🔍 Tìm chuyên khoa
+              </button>
+            </div>
+            <span id="hs-input-chars">0/500</span>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hstat">
+            <div class="hstat-num" id="stat-doctors">5+</div>
+            <div class="hstat-label">Bác sĩ chuyên khoa</div>
+          </div>
+          <div class="hstat-sep"></div>
+          <div class="hstat">
+            <div class="hstat-num" id="stat-appointments">300+</div>
+            <div class="hstat-label">Lịch hẹn đã xử lý</div>
+          </div>
+          <div class="hstat-sep"></div>
+          <div class="hstat">
+            <div class="hstat-num" id="stat-patients">110+</div>
+            <div class="hstat-label">Bệnh nhân tin dùng</div>
+          </div>
+          <div class="hstat-sep"></div>
+          <div class="hstat">
+            <div class="hstat-num">24/7</div>
+            <div class="hstat-label">Hỗ trợ trực tuyến</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-scroll">
+        <span class="scroll-text">Kéo xuống</span>
+        <div class="scroll-arrow">
+          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" /></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+     3. BREADCRUMB
+══════════════════════════════════════ -->
+    <section id="breadcrumb">
+      <div class="bc-inner">
+        <ol class="bc-list">
+          <li class="bc-item">
+            <a class="bc-link" href="#">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"
+                />
+              </svg>
+              Trang chủ
+            </a>
+            <span class="bc-sep">›</span>
+          </li>
+          <li class="bc-item">
+            <a class="bc-link" href="#">Dịch vụ</a>
+            <span class="bc-sep">›</span>
+          </li>
+          <li class="bc-item">
+            <span class="bc-cur">Đặt lịch khám</span>
+          </li>
+        </ol>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span class="bc-tag">✨ AI Hỗ trợ</span>
+          <div class="bc-actions">
+            <button class="bc-btn">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7" /></svg>
+              Lọc
+            </button>
+            <button class="bc-btn">
+              <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              Tìm kiếm
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+     MAIN: SIDEBAR + CONTENT
+══════════════════════════════════════ -->
+    <div class="page-wrap">
+      <!-- ════════════════
+       4. SIDEBAR
+  ════════════════ -->
+      <aside id="sidebar">
+        <!-- Quick book -->
+        <div class="s-card reveal">
+          <div class="s-head">
+            <div class="s-ico" style="background: #eaf2ff">📅</div>
+            <div class="s-title">Đặt lịch nhanh</div>
+          </div>
+          <div class="s-body">
+            <div class="fg">
+              <label>Chuyên khoa</label>
+              <select id="sb-specialty">
+                <option value="">-- Chọn chuyên khoa --</option>
+                <option value="TimMach">❤️ Nội Tim Mạch</option>
+                <option value="TieuHoa">🫁 Nội Tiêu Hóa</option>
+                <option value="CXK">🦴 Cơ Xương Khớp</option>
+                <option value="DaKhoa">🏥 Đa Khoa</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Ngày hẹn</label>
+              <input type="date" id="sb-date" />
+            </div>
+            <div class="fg">
+              <label>Giờ hẹn</label>
+              <select>
+                <option>08:00 – 09:00</option>
+                <option>09:00 – 10:00</option>
+                <option>10:00 – 11:00</option>
+                <option>14:00 – 15:00</option>
+                <option>15:00 – 16:00</option>
+              </select>
+            </div>
+            <button class="btn-book" onclick="openMultiStepBooking()">
+              <span>Đặt lịch nhanh</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Doctors -->
+        <div class="s-card reveal">
+          <div class="s-head">
+            <div class="s-ico" style="background: #ecfdf5">👨‍⚕️</div>
+            <div class="s-title">Bác sĩ trực hôm nay</div>
+          </div>
+          <div class="doc-list">
+            <a class="doc-item" href="#">
+              <div class="doc-avatar" style="background: #1057a4">MĐ</div>
+              <div class="doc-info">
+                <div class="doc-name">Bác sĩ Mặc Định</div>
+                <div class="doc-spec">Đa Khoa</div>
+              </div>
+              <span class="doc-badge badge-available">Còn chỗ</span>
+            </a>
+            <a class="doc-item" href="#">
+              <div class="doc-avatar" style="background: #00b896">TH</div>
+              <div class="doc-info">
+                <div class="doc-name">Bác sĩ TieuHoa</div>
+                <div class="doc-spec">Nội Tiêu Hóa</div>
+              </div>
+              <span class="doc-badge badge-available">Còn chỗ</span>
+            </a>
+            <a class="doc-item" href="#">
+              <div class="doc-avatar" style="background: #e53935">TM</div>
+              <div class="doc-info">
+                <div class="doc-name">Bác sĩ TimMach</div>
+                <div class="doc-spec">Nội Tim Mạch</div>
+              </div>
+              <span class="doc-badge badge-busy">Bận buổi sáng</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="s-card reveal">
+          <div class="s-head">
+            <div class="s-ico" style="background: #fef3c7">📊</div>
+            <div class="s-title">Thống kê hệ thống</div>
+          </div>
+          <div class="s-stats-grid">
+            <div class="s-stat">
+              <div class="s-stat-num">11</div>
+              <div class="s-stat-lbl">Lịch hẹn</div>
+            </div>
+            <div class="s-stat">
+              <div class="s-stat-num">1</div>
+              <div class="s-stat-lbl">Bệnh nhân</div>
+            </div>
+            <div class="s-stat">
+              <div class="s-stat-num">3</div>
+              <div class="s-stat-lbl">Bác sĩ</div>
+            </div>
+            <div class="s-stat">
+              <div class="s-stat-num">0</div>
+              <div class="s-stat-lbl">Hồ sơ bệnh</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hotline -->
+        <div class="hotline-card reveal">
+          <div class="hl-icon">📞</div>
+          <div class="hl-label">Đường dây hỗ trợ</div>
+          <div class="hl-number">1900 – 1234</div>
+          <div class="hl-time">Cấp cứu 24/7 · Tư vấn 8:00–22:00</div>
+          <button class="hl-btn">Gọi ngay</button>
+        </div>
+      </aside>
+
+      <!-- ════════════════
+       5. SLIDER + MAIN
+  ════════════════ -->
+      <main class="main-col">
+        <!-- SLIDER -->
+        <section class="slider-section reveal">
+          <div class="sec-header">
+            <div>
+              <div class="sec-title">Tin tức & Dịch vụ nổi bật</div>
+              <div class="sec-sub">Cập nhật thông tin y tế mới nhất</div>
+            </div>
+            <div class="slider-ctrl">
+              <button class="sl-btn" id="sl-prev" onclick="moveSlide(-1)">
+                ‹
+              </button>
+              <div class="sl-dots">
+                <button class="sl-dot active" onclick="goSlide(0)"></button>
+                <button class="sl-dot" onclick="goSlide(1)"></button>
+                <button class="sl-dot" onclick="goSlide(2)"></button>
+              </div>
+              <button class="sl-btn" id="sl-next" onclick="moveSlide(1)">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="slider-wrap">
+            <div class="slider-track" id="slider-track">
+              <!-- Slide 1 -->
+              <div class="slide slide-bg-1">
+                <div class="slide-pattern"></div>
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                  <span class="slide-tag">Dịch vụ mới</span>
+                  <div class="slide-title">
+                    Đặt lịch khám<br />với AI hỗ trợ
+                  </div>
+                  <div class="slide-desc">
+                    Mô tả triệu chứng — AI sẽ tự động gợi ý chuyên khoa phù hợp
+                    và đặt lịch cho bạn chỉ trong 30 giây.
+                  </div>
+                  <button
+                    class="slide-btn"
+                    onclick="
+                      document
+                        .getElementById('ai-form')
+                        .scrollIntoView({ behavior: 'smooth' })
+                    "
+                  >
+                    Thử ngay
+                    <svg viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="slide-illus">🏥</div>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="slide slide-bg-2">
+                <div class="slide-pattern"></div>
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                  <span class="slide-tag">Khuyến mãi</span>
+                  <div class="slide-title">
+                    Khám tổng quát<br />miễn phí tháng 4
+                  </div>
+                  <div class="slide-desc">
+                    Bệnh nhân đăng ký trước ngày 30/4 sẽ được khám tổng quát và
+                    tư vấn dinh dưỡng miễn phí.
+                  </div>
+                  <button class="slide-btn">
+                    Đăng ký ngay
+                    <svg viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="slide-illus">🩺</div>
+              </div>
+
+              <!-- Slide 3 -->
+              <div class="slide slide-bg-3">
+                <div class="slide-pattern"></div>
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                  <span class="slide-tag">Cấp cứu</span>
+                  <div class="slide-title">
+                    Phòng cấp cứu<br />hoạt động 24/7
+                  </div>
+                  <div class="slide-desc">
+                    Đội ngũ y bác sĩ luôn sẵn sàng. Gọi 1900-1234 hoặc đến trực
+                    tiếp phòng khám bất kỳ lúc nào.
+                  </div>
+                  <button class="slide-btn">
+                    Xem chi tiết
+                    <svg viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="slide-illus">🚑</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- NEWS SECTION -->
+        <section id="news-section" class="news-section reveal">
+          <div class="sec-header">
+            <div>
+              <div class="sec-title">Tin tức sức khỏe</div>
+              <div class="sec-sub">Cập nhật từ VnExpress — tự động làm mới mỗi lần truy cập</div>
+            </div>
+            <a href="https://vnexpress.net/suc-khoe" target="_blank" rel="noopener"
+               style="font-size:13px;color:var(--primary);font-weight:600;text-decoration:none;white-space:nowrap;">
+              Xem tất cả →
+            </a>
+          </div>
+          <div class="news-grid" id="news-grid">
+            <!-- skeleton -->
+            <div class="news-card" style="pointer-events:none">
+              <div class="news-skeleton" style="height:180px"></div>
+              <div class="news-card-body" style="gap:10px;display:flex;flex-direction:column">
+                <div class="news-skeleton" style="height:14px;width:60px;border-radius:20px"></div>
+                <div class="news-skeleton" style="height:16px"></div>
+                <div class="news-skeleton" style="height:16px;width:80%"></div>
+                <div class="news-skeleton" style="height:13px;margin-top:4px"></div>
+                <div class="news-skeleton" style="height:13px;width:70%"></div>
+              </div>
+            </div>
+            <div class="news-card" style="pointer-events:none">
+              <div class="news-skeleton" style="height:180px"></div>
+              <div class="news-card-body" style="gap:10px;display:flex;flex-direction:column">
+                <div class="news-skeleton" style="height:14px;width:60px;border-radius:20px"></div>
+                <div class="news-skeleton" style="height:16px"></div>
+                <div class="news-skeleton" style="height:16px;width:80%"></div>
+                <div class="news-skeleton" style="height:13px;margin-top:4px"></div>
+                <div class="news-skeleton" style="height:13px;width:70%"></div>
+              </div>
+            </div>
+            <div class="news-card" style="pointer-events:none">
+              <div class="news-skeleton" style="height:180px"></div>
+              <div class="news-card-body" style="gap:10px;display:flex;flex-direction:column">
+                <div class="news-skeleton" style="height:14px;width:60px;border-radius:20px"></div>
+                <div class="news-skeleton" style="height:16px"></div>
+                <div class="news-skeleton" style="height:16px;width:80%"></div>
+                <div class="news-skeleton" style="height:13px;margin-top:4px"></div>
+                <div class="news-skeleton" style="height:13px;width:70%"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section class="reveal">
+          <div class="sec-header">
+            <div>
+              <div class="sec-title">Chuyên khoa của chúng tôi</div>
+              <div class="sec-sub">
+                Từ dữ liệu thực trong hệ thống phòng khám
+              </div>
+            </div>
+          </div>
+          <div class="services-grid">
+            <a class="svc-card" href="#" style="--svc-bg:#fff0f0;--svc-color:#be123c;--svc-accent:#be123c">
+              <div class="svc-icon"><i data-lucide="heart-pulse"></i></div>
+              <div class="svc-name">Nội Tim Mạch</div>
+              <div class="svc-desc">Chẩn đoán và điều trị các bệnh lý về tim mạch, huyết áp, mạch máu.</div>
+              <div class="svc-link">Xem bác sĩ <i data-lucide="arrow-right"></i></div>
+            </a>
+            <a class="svc-card" href="#" style="--svc-bg:#fff7ed;--svc-color:#c2410c;--svc-accent:#c2410c">
+              <div class="svc-icon"><i data-lucide="activity"></i></div>
+              <div class="svc-name">Nội Tiêu Hóa</div>
+              <div class="svc-desc">Điều trị các bệnh dạ dày, ruột, gan mật và các rối loạn tiêu hóa.</div>
+              <div class="svc-link">Xem bác sĩ <i data-lucide="arrow-right"></i></div>
+            </a>
+            <a class="svc-card" href="#" style="--svc-bg:#f0fdf4;--svc-color:#15803d;--svc-accent:#15803d">
+              <div class="svc-icon"><i data-lucide="bone"></i></div>
+              <div class="svc-name">Cơ Xương Khớp</div>
+              <div class="svc-desc">Điều trị đau lưng, cổ vai, khớp gối và các bệnh cơ xương khớp mãn tính.</div>
+              <div class="svc-link">Xem bác sĩ <i data-lucide="arrow-right"></i></div>
+            </a>
+            <a class="svc-card" href="#" style="--svc-bg:#eff6ff;--svc-color:#2563eb;--svc-accent:#2563eb">
+              <div class="svc-icon"><i data-lucide="stethoscope"></i></div>
+              <div class="svc-name">Đa Khoa</div>
+              <div class="svc-desc">Khám tổng quát, sàng lọc bệnh định kỳ và tư vấn sức khoẻ toàn diện.</div>
+              <div class="svc-link">Xem bác sĩ <i data-lucide="arrow-right"></i></div>
+            </a>
+            <a class="svc-card" href="#" onclick="handleHoSoCard(event)" style="--svc-bg:#fdf4ff;--svc-color:#9333ea;--svc-accent:#9333ea">
+              <div class="svc-icon"><i data-lucide="file-text"></i></div>
+              <div class="svc-name">Hồ sơ bệnh án</div>
+              <div class="svc-desc">Tra cứu hồ sơ, kết quả xét nghiệm và đơn thuốc trực tuyến.</div>
+              <div class="svc-link">Tra cứu <i data-lucide="arrow-right"></i></div>
+            </a>
+            <a class="svc-card" href="#" style="--svc-bg:#ecfdf5;--svc-color:#0e7490;--svc-accent:#0e7490">
+              <div class="svc-icon"><i data-lucide="message-circle"></i></div>
+              <div class="svc-name">Tư vấn trực tuyến</div>
+              <div class="svc-desc">Chat với bác sĩ, nhận đơn thuốc và hướng dẫn điều trị từ xa.</div>
+              <div class="svc-link">Bắt đầu <i data-lucide="arrow-right"></i></div>
+            </a>
+          </div>
+        </section>
+
+        <!-- DOCTOR DASHBOARD (hiện khi đăng nhập là Bác sĩ/Admin) -->
+        <div
+          id="doctor-dashboard"
+          class="doctor-dashboard reveal"
+          style="display: none"
+        >
+          <div class="dd-title">🩺 Bảng Điều Khiển Bác Sĩ</div>
+          <div class="dd-sub">
+            Tổng quan hệ thống · Cập nhật theo thời gian thực
+          </div>
+          <div class="dd-metrics">
+            <div class="dd-metric">
+              <div class="dd-metric-num" id="dd-total">0</div>
+              <div class="dd-metric-lbl">Tổng lịch hẹn</div>
+            </div>
+            <div class="dd-metric">
+              <div class="dd-metric-num" id="dd-pending">0</div>
+              <div class="dd-metric-lbl">Chờ duyệt</div>
+            </div>
+            <div class="dd-metric">
+              <div class="dd-metric-num" id="dd-records">0</div>
+              <div class="dd-metric-lbl">Hồ sơ bệnh án</div>
+            </div>
+            <div class="dd-metric">
+              <div class="dd-metric-num" id="dd-patients">0</div>
+              <div class="dd-metric-lbl">Bệnh nhân</div>
+            </div>
+          </div>
+          <div class="dd-actions">
+            <button
+              class="dd-action-btn primary"
+              onclick="
+                openEmrModal(1,'Pham Nhat Quang','Lịch #1 · 10/04/2026 · BS. Mặc Định',0)
+              "
+            >
+              📋 Lập bệnh án mới
+            </button>
+            <button
+              class="dd-action-btn"
+              onclick="
+                openEmailInputModal({
+                  patientName: 'Bệnh nhân Demo',
+                  date: '16/05/2026',
+                  time: '09:00–10:00',
+                  doctor: 'BS. Mặc Định',
+                  spec: 'Đa Khoa',
+                  amount: 200000,
+                })
+              "
+            >
+              📧 Gửi Email thông báo
+            </button>
+            <button class="dd-action-btn" onclick="openSchedModal()">
+              🤖 AI Scheduling Agent
+            </button>
+            <button
+              class="dd-action-btn"
+              onclick="openQrModal(200000, 'MEDCARE KHAM 001')"
+            >
+              💳 Tạo VietQR
+            </button>
+            <button class="dd-action-btn" onclick="toggleQueue()">
+              🏥 Xem Hàng Chờ
+            </button>
+            <button class="dd-action-btn" onclick="openOcrModal()">
+              📷 Nhập hồ sơ bằng OCR
+            </button>
+          </div>
+          <!-- Email Log -->
+          <div
+            style="
+              margin-top: 18px;
+              border-top: 1px solid rgba(255, 255, 255, 0.12);
+              padding-top: 14px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 10px;
+              "
+            >
+              <span style="font-size: 12.5px; font-weight: 700; opacity: 0.8"
+                >📬 Email đã gửi gần đây</span
+              >
+              <span class="email-log-badge" id="email-log-count"></span>
+            </div>
+            <div id="email-log-list" style="font-size: 12.5px; opacity: 0.75">
+              <div style="text-align: center; padding: 10px 0; opacity: 0.55">
+                Chưa có email nào được gửi
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PATIENT DASHBOARD (hiện khi login bệnh nhân) -->
+        <section id="patient-dashboard" class="reveal" style="display: none">
+          <div
+            style="
+              background: linear-gradient(
+                135deg,
+                #0c3870,
+                #1057a4 60%,
+                #00896e
+              );
+              border-radius: 18px;
+              padding: 24px;
+              color: white;
+              margin-bottom: 0;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 18px;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    font-family: &quot;Fraunces&quot;, serif;
+                    font-size: 20px;
+                    font-weight: 700;
+                  "
+                >
+                  👤 Hồ Sơ Bệnh Nhân
+                </div>
+                <div
+                  style="font-size: 13px; opacity: 0.7; margin-top: 3px"
+                  id="pd-name-display"
+                >
+                  —
+                </div>
+              </div>
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.15);
+                  border-radius: 50%;
+                  width: 52px;
+                  height: 52px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 26px;
+                "
+              >
+                🙋
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+                margin-bottom: 18px;
+              "
+            >
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 12px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 22px;
+                    font-weight: 800;
+                    font-family: &quot;Fraunces&quot;, serif;
+                  "
+                >
+                  3
+                </div>
+                <div style="font-size: 11.5px; opacity: 0.7">Lịch sắp tới</div>
+              </div>
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 12px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 22px;
+                    font-weight: 800;
+                    font-family: &quot;Fraunces&quot;, serif;
+                  "
+                >
+                  12
+                </div>
+                <div style="font-size: 11.5px; opacity: 0.7">Lần khám</div>
+              </div>
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 12px;
+                  padding: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 22px;
+                    font-weight: 800;
+                    font-family: &quot;Fraunces&quot;, serif;
+                  "
+                >
+                  2
+                </div>
+                <div style="font-size: 11.5px; opacity: 0.7">Đơn thuốc</div>
+              </div>
+            </div>
+            <!-- Upcoming appointments -->
+            <div
+              style="
+                font-size: 12.5px;
+                font-weight: 700;
+                opacity: 0.75;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              "
+            >
+              📅 Lịch hẹn sắp tới
+            </div>
+            <div style="display: grid; gap: 8px">
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 10px;
+                  padding: 11px 14px;
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                "
+              >
+                <div
+                  style="
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #ef4444;
+                    flex-shrink: 0;
+                  "
+                ></div>
+                <div style="flex: 1">
+                  <div style="font-size: 13px; font-weight: 700">
+                    BS. Phạm Văn Dũng · Tim Mạch
+                  </div>
+                  <div style="font-size: 12px; opacity: 0.7">
+                    17/05/2026 · 09:00
+                  </div>
+                </div>
+                <button
+                  onclick="openQrModal(200000, 'MEDCARE KHAM 001')"
+                  style="
+                    padding: 4px 10px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 7px;
+                    color: white;
+                    font-size: 11.5px;
+                    cursor: pointer;
+                    font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                  "
+                >
+                  QR
+                </button>
+              </div>
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 10px;
+                  padding: 11px 14px;
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                "
+              >
+                <div
+                  style="
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #10b981;
+                    flex-shrink: 0;
+                  "
+                ></div>
+                <div style="flex: 1">
+                  <div style="font-size: 13px; font-weight: 700">
+                    BS. Lê Thị Hương · Tiêu Hóa
+                  </div>
+                  <div style="font-size: 12px; opacity: 0.7">
+                    22/05/2026 · 14:30
+                  </div>
+                </div>
+                <button
+                  onclick="openQrModal(200000, 'MEDCARE KHAM 002')"
+                  style="
+                    padding: 4px 10px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 7px;
+                    color: white;
+                    font-size: 11.5px;
+                    cursor: pointer;
+                    font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                  "
+                >
+                  QR
+                </button>
+              </div>
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 10px;
+                  padding: 11px 14px;
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                "
+              >
+                <div
+                  style="
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #6366f1;
+                    flex-shrink: 0;
+                  "
+                ></div>
+                <div style="flex: 1">
+                  <div style="font-size: 13px; font-weight: 700">
+                    BS. Nguyễn Thanh Tùng · Đa Khoa
+                  </div>
+                  <div style="font-size: 12px; opacity: 0.7">
+                    28/05/2026 · 08:00
+                  </div>
+                </div>
+                <button
+                  onclick="openQrModal(200000, 'MEDCARE KHAM 003')"
+                  style="
+                    padding: 4px 10px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 7px;
+                    color: white;
+                    font-size: 11.5px;
+                    cursor: pointer;
+                    font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                  "
+                >
+                  QR
+                </button>
+              </div>
+            </div>
+            <!-- Prescriptions -->
+            <div
+              style="
+                font-size: 12.5px;
+                font-weight: 700;
+                opacity: 0.75;
+                margin: 14px 0 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              "
+            >
+              💊 Đơn thuốc hiện tại
+            </div>
+            <div
+              style="
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                padding: 12px;
+                font-size: 13px;
+              "
+            >
+              <div style="font-weight: 700; margin-bottom: 6px">
+                Omeprazole 20mg
+              </div>
+              <div style="opacity: 0.7; font-size: 12px">
+                1 viên/lần · Uống trước ăn 30' · 14 ngày
+              </div>
+              <div style="opacity: 0.7; font-size: 12px; margin-top: 4px">
+                Cấp bởi: BS. TieuHoa · 10/05/2026
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 14px">
+              <button
+                onclick="openMultiStepBooking()"
+                style="
+                  flex: 1;
+                  padding: 10px;
+                  background: rgba(255, 255, 255, 0.2);
+                  border: 1px solid rgba(255, 255, 255, 0.3);
+                  border-radius: 9px;
+                  color: white;
+                  font-size: 13px;
+                  font-weight: 700;
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                📅 Đặt lịch mới
+              </button>
+              <button
+                onclick="toggleChatbot()"
+                style="
+                  flex: 1;
+                  padding: 10px;
+                  background: var(--teal);
+                  border: none;
+                  border-radius: 9px;
+                  color: white;
+                  font-size: 13px;
+                  font-weight: 700;
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                🤖 AI Tư vấn
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- APPOINTMENTS TABLE -->
+        <section class="appt-section reveal">
+          <div class="sec-header">
+            <div>
+              <div class="sec-title">Lịch hẹn gần đây</div>
+              <div class="sec-sub">Dữ liệu thực từ phongkham.db</div>
+            </div>
+            <button class="bc-btn" onclick="openAllAppointmentsModal()">
+              Xem tất cả →
+            </button>
+          </div>
+          <div
+            style="
+              background: white;
+              border: 1px solid var(--border);
+              border-radius: var(--r-lg);
+              overflow: hidden;
+            "
+          >
+            <table class="appt-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Bệnh nhân</th>
+                  <th>Triệu chứng</th>
+                  <th>Bác sĩ</th>
+                  <th>Ngày hẹn</th>
+                  <th>Trạng thái</th>
+                  <th class="doctor-only">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color: var(--hint); font-weight: 600">#1</td>
+                  <td class="patient-name">Pham Nhat quang</td>
+                  <td style="color: var(--muted)">Đau bụng</td>
+                  <td>
+                    <div class="appt-doc">
+                      <div class="mini-avatar" style="background: #1057a4">
+                        MĐ
+                      </div>
+                      BS. Mặc Định
+                    </div>
+                  </td>
+                  <td style="color: var(--muted)">10/04/2026</td>
+                  <td>
+                    <span class="status-badge status-confirmed"
+                      >Đã xác nhận</span
+                    >
+                  </td>
+                  <td class="doctor-only">
+                    <button
+                      class="btn-emr"
+                      onclick="openEmrModal(1,'Pham Nhat Quang','Lịch #1 · 10/04/2026 · BS. Mặc Định',0)"
+                    >
+                      📋 Bệnh án
+                    </button>
+                    <button
+                      class="btn-confirm-row"
+                      onclick="
+                        openEmailInputModal({
+                          patientName: 'Pham Nhat Quang',
+                          date: '10/04/2026',
+                          time: '09:00–10:00',
+                          doctor: 'BS. Mặc Định',
+                          spec: 'Đa Khoa',
+                          amount: 200000,
+                        })
+                      "
+                    >
+                      📧 Email
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: var(--hint); font-weight: 600">#2</td>
+                  <td class="patient-name">Pham Nhat quang</td>
+                  <td style="color: var(--muted)">Đau bụng</td>
+                  <td>
+                    <div class="appt-doc">
+                      <div class="mini-avatar" style="background: #00b896">
+                        TH
+                      </div>
+                      BS. TieuHoa
+                    </div>
+                  </td>
+                  <td style="color: var(--muted)">10/04/2026</td>
+                  <td>
+                    <span class="status-badge status-confirmed"
+                      >Đã xác nhận</span
+                    >
+                  </td>
+                  <td class="doctor-only">
+                    <button
+                      class="btn-emr"
+                      onclick="
+                        openEmrModal(2,'Pham Nhat Quang','Lịch #2 · 10/04/2026 · BS. TieuHoa',0)
+                      "
+                    >
+                      📋 Bệnh án
+                    </button>
+                    <button
+                      class="btn-confirm-row"
+                      onclick="
+                        openEmailInputModal({
+                          patientName: 'Pham Nhat Quang',
+                          date: '10/04/2026',
+                          time: '10:00–11:00',
+                          doctor: 'BS. TieuHoa',
+                          spec: 'Nội Tiêu Hóa',
+                          amount: 200000,
+                        })
+                      "
+                    >
+                      📧 Email
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: var(--hint); font-weight: 600">#3</td>
+                  <td class="patient-name">Pham Nhat quang</td>
+                  <td style="color: var(--muted)">Đau bụng, khó thở</td>
+                  <td>
+                    <div class="appt-doc">
+                      <div class="mini-avatar" style="background: #e53935">
+                        TM
+                      </div>
+                      BS. TimMach
+                    </div>
+                  </td>
+                  <td style="color: var(--muted)">13/04/2026</td>
+                  <td>
+                    <span class="status-badge status-confirmed"
+                      >Đã xác nhận</span
+                    >
+                  </td>
+                  <td class="doctor-only">
+                    <button
+                      class="btn-emr"
+                      onclick="
+                        openEmrModal(3,'Pham Nhat Quang','Lịch #3 · 13/04/2026 · BS. TimMach',0)
+                      "
+                    >
+                      📋 Bệnh án
+                    </button>
+                    <button
+                      class="btn-confirm-row"
+                      onclick="
+                        openEmailInputModal({
+                          patientName: 'Pham Nhat Quang',
+                          date: '13/04/2026',
+                          time: '09:00–10:00',
+                          doctor: 'BS. TimMach',
+                          spec: 'Nội Tim Mạch',
+                          amount: 200000,
+                        })
+                      "
+                    >
+                      📧 Email
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: var(--hint); font-weight: 600">#4</td>
+                  <td class="patient-name">—</td>
+                  <td style="color: var(--muted)">Đang xử lý</td>
+                  <td>
+                    <div class="appt-doc">
+                      <div class="mini-avatar" style="background: #6f42c1">
+                        ?
+                      </div>
+                      Chưa phân công
+                    </div>
+                  </td>
+                  <td style="color: var(--muted)">—</td>
+                  <td>
+                    <span class="status-badge status-pending">Chờ duyệt</span>
+                  </td>
+                  <td class="doctor-only">
+                    <button class="btn-confirm-row" onclick="openSchedModal()">
+                      🤖 Phân công AI
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- AI APPOINTMENT FORM -->
+        <section id="ai-form" class="ai-form-section reveal form-lock-wrap">
+          <!-- Lock overlay — ẩn khi đã đăng nhập -->
+          <div class="form-lock-overlay" id="form-lock-overlay">
+            <div class="form-lock-ico">🔒</div>
+            <div class="form-lock-title">Đăng nhập để đặt lịch khám</div>
+            <div class="form-lock-sub">
+              Bạn cần đăng nhập để sử dụng tính năng đặt lịch, theo dõi hồ sơ và
+              nhận thông báo qua email.
+            </div>
+            <button class="btn-lock-login" onclick="openLoginModal()">
+              Đăng nhập ngay →
+            </button>
+            <div style="font-size: 12px; color: var(--hint)">
+              Chưa có tài khoản?
+              <a
+                href="#"
+                onclick="openRegisterModal(); return false;"
+                style="color: var(--blue); font-weight: 600"
+                >Đăng ký miễn phí</a
+              >
+            </div>
+          </div>
+          <div class="ai-form-header">
+            <div class="ai-form-header-ico">✨</div>
+            <div>
+              <div class="ai-form-title">Đăng ký khám bệnh – AI Hỗ trợ</div>
+              <div class="ai-form-sub">
+                Hệ thống từ QuanLyPhongKham · BS. Phạm Nhật Quang
+              </div>
+            </div>
+          </div>
+          <div class="ai-form-body">
+            <div class="af-group">
+              <label class="af-label">Họ và tên</label>
+              <input
+                class="af-input"
+                id="af-name"
+                name="patient-name"
+                type="text"
+                autocomplete="name"
+                placeholder="Ví dụ: Nguyễn Văn A"
+              />
+            </div>
+            <div class="af-group">
+              <label class="af-label">Số điện thoại</label>
+              <input
+                class="af-input"
+                id="af-phone"
+                name="patient-tel"
+                type="tel"
+                autocomplete="tel"
+                inputmode="tel"
+                placeholder="0901 234 567"
+              />
+            </div>
+            <div class="af-group">
+              <label class="af-label">Ngày hẹn</label>
+              <input class="af-input" id="af-date" type="date" />
+            </div>
+            <div class="af-group">
+              <label class="af-label">Giờ hẹn</label>
+              <select class="af-select" id="af-time">
+                <option>08:00 – 09:00</option>
+                <option>09:00 – 10:00</option>
+                <option>10:00 – 11:00</option>
+                <option>14:00 – 15:00</option>
+                <option>15:00 – 16:00</option>
+              </select>
+            </div>
+            <div class="af-group full">
+              <label class="af-label">Triệu chứng của bạn</label>
+              <textarea
+                class="af-textarea"
+                id="af-symptom"
+                placeholder="Ví dụ: Tôi bị đau tức ngực về đêm và khó thở, đau khoảng 3 ngày nay…"
+              ></textarea>
+              <div
+                style="
+                  margin-top: 8px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  flex-wrap: wrap;
+                "
+              >
+                <button
+                  class="btn-ai-suggest"
+                  id="ai-btn"
+                  onclick="aiSuggest()"
+                >
+                  ✨ Dùng AI gợi ý chuyên khoa
+                </button>
+                <div id="ai-result" class="ai-result-box"></div>
+              </div>
+            </div>
+            <div class="af-group">
+              <label class="af-label">Chuyên khoa</label>
+              <select class="af-select" id="af-specialty">
+                <option value="">-- Vui lòng chọn --</option>
+                <option value="TimMach">❤️ Nội Tim Mạch</option>
+                <option value="TieuHoa">🫁 Nội Tiêu Hóa</option>
+                <option value="CXK">🦴 Cơ Xương Khớp</option>
+                <option value="DaKhoa">🏥 Đa Khoa</option>
+              </select>
+            </div>
+            <div class="af-group">
+              <label class="af-label">Bác sĩ</label>
+              <select class="af-select" id="af-doctor">
+                <option value="">-- Chọn bác sĩ --</option>
+                <option value="1">👨‍⚕️ Bác sĩ Mặc Định (Đa Khoa)</option>
+                <option value="2">👩‍⚕️ Bác sĩ TieuHoa (Tiêu Hóa)</option>
+                <option value="3">👨‍⚕️ Bác sĩ TimMach (Tim Mạch)</option>
+              </select>
+            </div>
+            <div class="af-footer ai-form-footer">
+              <button class="btn-reset-appt" onclick="resetForm()">
+                Nhập lại
+              </button>
+              <button class="btn-submit-appt" onclick="submitAppt()">
+                ✓ Xác nhận đặt lịch
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ══════════════════════════════════════
+     6. FOOTER
+══════════════════════════════════════ -->
+    <footer id="site-footer">
+      <div class="footer-top">
+        <div class="ft-brand">
+          <div class="ft-logo">
+            <div class="ft-logo-mark">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                />
+              </svg>
+            </div>
+            <span class="ft-logo-text">MedCare</span>
+          </div>
+          <p class="ft-desc">
+            Hệ thống quản lý phòng khám hiện đại — kết nối bệnh nhân với bác sĩ
+            chuyên khoa nhanh chóng, minh bạch và tin cậy.
+          </p>
+          <div class="ft-socials">
+            <a class="ft-social" href="#">📘</a>
+            <a class="ft-social" href="#">📸</a>
+            <a class="ft-social" href="#">🐦</a>
+            <a class="ft-social" href="#">▶️</a>
+          </div>
+        </div>
+        <div>
+          <div class="ft-col-title">Chuyên khoa</div>
+          <div class="ft-links">
+            <a class="ft-link" href="#">Nội Tim Mạch</a>
+            <a class="ft-link" href="#">Nội Tiêu Hóa</a>
+            <a class="ft-link" href="#">Cơ Xương Khớp</a>
+            <a class="ft-link" href="#">Đa Khoa</a>
+            <a class="ft-link" href="#">Cấp cứu 24/7</a>
+          </div>
+        </div>
+        <div>
+          <div class="ft-col-title">Dịch vụ</div>
+          <div class="ft-links">
+            <a class="ft-link" href="#">Đặt lịch khám</a>
+            <a class="ft-link" href="#">Hồ sơ bệnh án</a>
+            <a class="ft-link" href="#">Tư vấn trực tuyến</a>
+            <a class="ft-link" href="#">Xét nghiệm</a>
+            <a class="ft-link" href="#">Khám tổng quát</a>
+          </div>
+        </div>
+        <div>
+          <div class="ft-col-title">Liên hệ</div>
+          <div class="ft-contact-item">
+            <span class="ft-contact-ico">📍</span>
+            <div>
+              <div class="ft-contact-lbl">Địa chỉ</div>
+              <div class="ft-contact-val">123 Đường Sức Khỏe, Q.1, TP.HCM</div>
+            </div>
+          </div>
+          <div class="ft-contact-item">
+            <span class="ft-contact-ico">📞</span>
+            <div>
+              <div class="ft-contact-lbl">Điện thoại</div>
+              <div class="ft-contact-val">1900 – 1234</div>
+            </div>
+          </div>
+          <div class="ft-contact-item">
+            <span class="ft-contact-ico">✉️</span>
+            <div>
+              <div class="ft-contact-lbl">Email</div>
+              <div class="ft-contact-val">info@medcare.vn</div>
+            </div>
+          </div>
+          <div class="ft-contact-item">
+            <span class="ft-contact-ico">🕐</span>
+            <div>
+              <div class="ft-contact-lbl">Giờ làm việc</div>
+              <div class="ft-contact-val">
+                T2–T7: 7:00–20:00 | CN: 8:00–12:00
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-mid">
+        <span class="ft-mid-text"
+          >Hệ thống QuanLyPhongKham · ASP.NET Core + SQLite · Phiên bản
+          2026</span
+        >
+        <div class="ft-certs">
+          <span class="ft-cert">✓ Bộ Y Tế cấp phép</span>
+          <span class="ft-cert">✓ ISO 9001:2015</span>
+          <span class="ft-cert">✓ HIPAA Compliant</span>
+        </div>
+      </div>
+
+      <div class="footer-bot">
+        <span class="ft-copy"
+          >© 2026 MedCare · Phòng Khám Đa Khoa. All rights reserved.</span
+        >
+        <div class="ft-policy">
+          <a href="#">Chính sách bảo mật</a>
+          <a href="#">Điều khoản sử dụng</a>
+          <a href="#">Cookie</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Email Input Modal (thu thập địa chỉ email) -->
+    <div class="ei-overlay" id="ei-modal">
+      <div class="ei-box">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+          "
+        >
+          <div
+            style="
+              width: 42px;
+              height: 42px;
+              background: linear-gradient(135deg, #1057a4, #00b896);
+              border-radius: 11px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 20px;
+              flex-shrink: 0;
+            "
+          >
+            📧
+          </div>
+          <div>
+            <div class="ei-title">Gửi thông báo Email</div>
+            <div style="font-size: 12px; color: var(--muted)">
+              Bệnh nhân: <b id="ei-patient-name">—</b>
+            </div>
+          </div>
+        </div>
+        <div class="ei-info">
+          📬 Hệ thống sẽ mở <b>2 cửa sổ Gmail</b> với nội dung soạn sẵn:<br />
+          &nbsp;• <b>Bệnh nhân</b> — Xác nhận lịch hẹn + Mã QR thanh toán<br />
+          &nbsp;• <b>Bác sĩ</b> — Thông báo lịch mới + Nút Chấp nhận/Từ chối 1
+          chạm
+        </div>
+
+        <div class="ei-field">
+          <label
+            >📧 Email Bệnh nhân
+            <span
+              style="font-weight: 400; text-transform: none; letter-spacing: 0"
+              >(có thể thay đổi)</span
+            ></label
+          >
+          <input
+            type="email"
+            id="ei-patient-email"
+            placeholder="benhnhan@gmail.com"
+            value="quangthosan@gmail.com"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="ei-field">
+          <label
+            >👨‍⚕️ Email Bác sĩ
+            <span
+              style="
+                background: #ecfdf5;
+                color: #065f46;
+                padding: 1px 7px;
+                border-radius: 100px;
+                font-size: 10px;
+                font-weight: 700;
+                text-transform: none;
+                letter-spacing: 0;
+              "
+              >Cố định</span
+            ></label
+          >
+          <div style="position: relative">
+            <input
+              type="email"
+              id="ei-doctor-email"
+              value="quanglcf123@gmail.com"
+              readonly
+              style="
+                padding-right: 80px;
+                background: #f0fdf4;
+                border-color: #a7f3d0;
+                color: #065f46;
+                font-weight: 600;
+                cursor: default;
+              "
+            />
+            <span
+              style="
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 11px;
+                color: #065f46;
+                font-weight: 700;
+              "
+              >🔒 Cố định</span
+            >
+          </div>
+        </div>
+
+        <div
+          style="
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 9px;
+            padding: 9px 13px;
+            font-size: 12px;
+            color: #92400e;
+            margin-bottom: 16px;
+          "
+        >
+          💡 Gmail sẽ mở 2 tab compose — bấm <b>Gửi</b> trong từng tab để hoàn
+          tất. Cho phép popup nếu trình duyệt hỏi.
+        </div>
+
+        <div class="ei-actions">
+          <button class="btn-ei-cancel" onclick="closeEmailInputModal()">
+            Hủy
+          </button>
+          <button class="btn-ei-send" onclick="confirmAndSend()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2.5"
+            >
+              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
+            </svg>
+            Mở Gmail & Gửi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Sending Status Modal -->
+    <div class="email-status-overlay" id="email-status-modal">
+      <div class="email-status-box">
+        <div id="email-status-inner">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div
+      class="modal-overlay"
+      id="login-modal"
+      onclick="handleModalOverlayClick(event)"
+    >
+      <div class="modal-box" id="login-modal-box">
+        <button class="modal-close" onclick="closeLoginModal()" aria-label="Đóng cửa sổ đăng nhập">×</button>
+        <div class="modal-logo">
+          <div class="modal-logo-mark">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+              />
+            </svg>
+          </div>
+          <span class="modal-logo-text"><b>Med</b>Care</span>
+        </div>
+        <div class="modal-title">Chào mừng trở lại 👋</div>
+        <div class="modal-sub">Chọn vai trò và đăng nhập vào hệ thống.</div>
+        <div style="display: flex; gap: 8px; margin-bottom: 18px">
+          <button
+            class="role-tab active"
+            id="rt-patient"
+            onclick="selectRole('patient')"
+          >
+            🙋 Bệnh nhân
+          </button>
+          <button
+            class="role-tab"
+            id="rt-doctor"
+            onclick="selectRole('doctor')"
+          >
+            👨‍⚕️ Bác sĩ
+          </button>
+          <button class="role-tab" id="rt-admin" onclick="selectRole('admin')">
+            🛡️ Admin
+          </button>
+        </div>
+        <div class="modal-error" id="modal-error">
+          Vui lòng nhập đầy đủ thông tin.
+        </div>
+        <div class="modal-fg">
+          <label for="login-email">Email / Số điện thoại</label>
+          <input
+            type="text"
+            id="login-email"
+            placeholder="example@medcare.vn"
+            autocomplete="username"
+          />
+        </div>
+        <div class="modal-fg">
+          <label for="login-pw">Mật khẩu</label>
+          <div class="modal-pw-wrap">
+            <input
+              type="password"
+              id="login-pw"
+              placeholder="Nhập mật khẩu"
+              autocomplete="current-password"
+            />
+            <button class="modal-pw-toggle" onclick="togglePw()" id="pw-eye">
+              👁
+            </button>
+          </div>
+        </div>
+        <div
+          style="
+            background: var(--blue-l);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--blue);
+            margin-bottom: 14px;
+          "
+        >
+          💡 <b>Demo:</b> Nhập bất kỳ email + mật khẩu. Thay đổi vai trò để trải
+          nghiệm RBAC.
+        </div>
+        <a
+          href="#"
+          class="modal-forget"
+          onclick="
+            showToast(
+              'Quên mật khẩu',
+              'Liên hệ 1900-1234 để đặt lại mật khẩu.',
+              'ℹ️',
+            );
+            return false;
+          "
+          >Quên mật khẩu?</a
+        >
+        <button class="btn-modal-login" onclick="doLogin()">Đăng nhập</button>
+        <div style="text-align:center;margin-top:10px">
+          <a href="#" onclick="openForgotModal();return false" style="font-size:13px;color:var(--blue);text-decoration:none">Quên mật khẩu?</a>
+        </div>
+        <div class="modal-divider"><span>hoặc</span></div>
+        <button
+          class="btn-modal-google"
+          onclick="
+            document.getElementById('login-email').value = 'google@demo.vn';
+            document.getElementById('login-pw').value = 'demo123';
+            doLogin();
+          "
+        >
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path
+              fill="#EA4335"
+              d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+            />
+            <path
+              fill="#4285F4"
+              d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+            />
+            <path
+              fill="#34A853"
+              d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+            />
+          </svg>
+          Tiếp tục với Google
+        </button>
+        <div class="modal-signup">
+          Chưa có tài khoản?
+          <a
+            href="#"
+            onclick="openRegisterModal(); return false;"
+            >Đăng ký ngay</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- MODAL: ĐĂNG KÝ TÀI KHOẢN BỆNH NHÂN          -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div
+      class="modal-overlay"
+      id="register-modal"
+      onclick="if(event.target===this)closeRegisterModal()"
+    >
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeRegisterModal()" aria-label="Đóng cửa sổ đăng ký">×</button>
+        <div class="modal-logo">
+          <div class="modal-logo-mark">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            </svg>
+          </div>
+          <span class="modal-logo-text"><b>Med</b>Care</span>
+        </div>
+        <div class="modal-title">Tạo tài khoản 🎉</div>
+        <div class="modal-sub">Đăng ký miễn phí để đặt lịch & theo dõi hồ sơ.</div>
+
+        <div class="modal-error" id="register-error">Lỗi</div>
+
+        <div class="modal-fg">
+          <label for="reg-fullname">Họ và tên *</label>
+          <input type="text" id="reg-fullname" placeholder="Nguyễn Văn A" autocomplete="name" />
+        </div>
+        <div class="modal-fg">
+          <label for="reg-username">Tên đăng nhập *</label>
+          <input type="text" id="reg-username" placeholder="vd: nguyenvana (≥ 4 ký tự)" autocomplete="username" />
+        </div>
+        <div style="display:flex; gap:10px">
+          <div class="modal-fg" style="flex:1">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" placeholder="email@gmail.com" autocomplete="email" />
+          </div>
+          <div class="modal-fg" style="flex:1">
+            <label for="reg-phone">Số điện thoại</label>
+            <input type="tel" id="reg-phone" placeholder="09xxxxxxxx" autocomplete="tel" />
+          </div>
+        </div>
+        <div style="display:flex; gap:10px">
+          <div class="modal-fg" style="flex:1">
+            <label for="reg-dob">Ngày sinh</label>
+            <input type="date" id="reg-dob" />
+          </div>
+          <div class="modal-fg" style="flex:1">
+            <label for="reg-gender">Giới tính</label>
+            <select id="reg-gender">
+              <option value="">-- Chọn --</option>
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-fg">
+          <label for="reg-pw">Mật khẩu *</label>
+          <div class="modal-pw-wrap">
+            <input type="password" id="reg-pw" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" />
+            <button class="modal-pw-toggle" onclick="toggleRegPw()" id="reg-pw-eye">👁</button>
+          </div>
+        </div>
+        <div class="modal-fg">
+          <label for="reg-pw2">Xác nhận mật khẩu *</label>
+          <input type="password" id="reg-pw2" placeholder="Nhập lại mật khẩu" autocomplete="new-password" />
+        </div>
+
+        <button class="btn-modal-login" onclick="doRegister()">Đăng ký</button>
+        <div class="modal-signup" style="margin-top:14px">
+          Đã có tài khoản?
+          <a href="#" onclick="closeRegisterModal(); openLoginModal(); return false;">Đăng nhập</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: QUÊN MẬT KHẨU -->
+    <div class="modal-overlay" id="forgot-modal" onclick="if(event.target===this)closeForgotModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeForgotModal()" aria-label="Đóng">×</button>
+        <div class="modal-title">Quên mật khẩu 🔑</div>
+        <div class="modal-sub">Nhập tên đăng nhập & email đã đăng ký — mật khẩu mới sẽ được gửi tới email của bạn.</div>
+        <div class="modal-error" id="forgot-error">Lỗi</div>
+        <div class="modal-fg"><label for="fg-username">Tên đăng nhập</label><input type="text" id="fg-username" autocomplete="username" /></div>
+        <div class="modal-fg"><label for="fg-email">Email đã đăng ký</label><input type="email" id="fg-email" autocomplete="email" /></div>
+        <button class="btn-modal-login" onclick="doForgot()">Gửi mật khẩu mới</button>
+        <div class="modal-signup" style="margin-top:14px"><a href="#" onclick="closeForgotModal();openLoginModal();return false">← Quay lại đăng nhập</a></div>
+      </div>
+    </div>
+
+    <!-- MODAL: HỒ SƠ CÁ NHÂN -->
+    <div class="modal-overlay" id="profile-modal" onclick="if(event.target===this)closeProfileModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeProfileModal()" aria-label="Đóng">×</button>
+        <div class="modal-title">Hồ sơ cá nhân 👤</div>
+        <div class="modal-sub">Cập nhật thông tin cá nhân và mật khẩu.</div>
+        <div class="modal-error" id="profile-error">Lỗi</div>
+        <div class="modal-fg"><label for="pf-fullname">Họ và tên</label><input type="text" id="pf-fullname" autocomplete="name" /></div>
+        <div style="display:flex;gap:10px">
+          <div class="modal-fg" style="flex:1"><label for="pf-email">Email</label><input type="email" id="pf-email" autocomplete="email" /></div>
+          <div class="modal-fg" style="flex:1"><label for="pf-phone">Số điện thoại</label><input type="tel" id="pf-phone" autocomplete="tel" /></div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <div class="modal-fg" style="flex:1"><label for="pf-dob">Ngày sinh</label><input type="date" id="pf-dob" /></div>
+          <div class="modal-fg" style="flex:1"><label for="pf-gender">Giới tính</label>
+            <select id="pf-gender"><option value="">-- Chọn --</option><option>Nam</option><option>Nữ</option><option>Khác</option></select></div>
+        </div>
+        <button class="btn-modal-login" onclick="saveProfile()">💾 Lưu thông tin</button>
+        <div class="modal-divider"><span>Đổi mật khẩu</span></div>
+        <div class="modal-fg"><label for="pf-curpw">Mật khẩu hiện tại</label><input type="password" id="pf-curpw" autocomplete="current-password" /></div>
+        <div class="modal-fg"><label for="pf-newpw">Mật khẩu mới</label><input type="password" id="pf-newpw" autocomplete="new-password" placeholder="≥6 ký tự, gồm chữ & số" /></div>
+        <button class="btn-modal-login" onclick="doChangePassword()">🔑 Đổi mật khẩu</button>
+      </div>
+    </div>
+
+    <!-- Role Banner -->
+    <div id="role-banner">
+      <div class="rb-left">
+        <span id="rb-icon">👤</span>
+        <span class="rb-badge" id="rb-role-badge">Bệnh nhân</span>
+        <span class="rb-name" id="rb-username">Chưa đăng nhập</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <span style="font-size: 12px; opacity: 0.7" id="rb-extra"></span>
+        <button class="rb-logout" onclick="openProfileModal()" style="background:rgba(255,255,255,.18)">👤 Hồ sơ</button>
+        <button class="rb-logout" onclick="doLogout()">Đăng xuất</button>
+      </div>
+    </div>
+
+    <!-- AI Scheduling Agent Modal -->
+    <div class="sched-modal-overlay" id="sched-modal">
+      <div class="sched-box">
+        <div class="sched-header">
+          <div class="sched-ico">🤖</div>
+          <div>
+            <div class="sched-title">AI Scheduling Agent</div>
+            <div class="sched-sub">
+              Đang tìm khung giờ trống tối ưu nhất cho bạn
+            </div>
+          </div>
+        </div>
+        <div class="sched-info-bar">
+          ⚠️ <b>BS. TimMach</b> hiện đang bận. AI Agent đang quét toàn bộ lịch
+          hẹn để tìm phương án thay thế…
+        </div>
+        <div class="sched-scanning" id="sched-scanning">
+          <div class="sched-scan-ring"></div>
+          <div class="sched-scan-txt">
+            🔍 Đang phân tích 47 khung giờ trống…
+          </div>
+        </div>
+        <div id="sched-results" style="display: none">
+          <div
+            style="
+              font-size: 13px;
+              font-weight: 700;
+              color: var(--txt);
+              margin-bottom: 12px;
+            "
+          >
+            🎯 3 khung giờ tốt nhất được AI đề xuất:
+          </div>
+          <div class="sched-slots">
+            <div class="sched-slot selected" onclick="selectSlot(this, 0)">
+              <div class="sched-slot-rank">1</div>
+              <div class="sched-slot-info">
+                <div class="sched-slot-time">📅 16/05/2026 · 09:00–10:00</div>
+                <div class="sched-slot-doc">
+                  👨‍⚕️ BS. Mặc Định (Đa Khoa) · Còn 2 chỗ
+                </div>
+              </div>
+              <span class="sched-slot-score">98% phù hợp</span>
+            </div>
+            <div class="sched-slot" onclick="selectSlot(this, 1)">
+              <div class="sched-slot-rank">2</div>
+              <div class="sched-slot-info">
+                <div class="sched-slot-time">📅 17/05/2026 · 14:00–15:00</div>
+                <div class="sched-slot-doc">
+                  👨‍⚕️ BS. TimMach · Có mặt trở lại
+                </div>
+              </div>
+              <span class="sched-slot-score">91% phù hợp</span>
+            </div>
+            <div class="sched-slot" onclick="selectSlot(this, 2)">
+              <div class="sched-slot-rank">3</div>
+              <div class="sched-slot-info">
+                <div class="sched-slot-time">📅 19/05/2026 · 08:00–09:00</div>
+                <div class="sched-slot-doc">
+                  👩‍⚕️ BS. TieuHoa (Hội chẩn) · Chuyên gia hỗ trợ
+                </div>
+              </div>
+              <span class="sched-slot-score">84% phù hợp</span>
+            </div>
+          </div>
+          <button class="btn-sched-confirm" onclick="confirmSchedule()">
+            ✅ Xác nhận & Gửi Email Thông Báo
+          </button>
+          <div style="text-align: center; margin-top: 10px">
+            <button
+              style="
+                background: none;
+                border: none;
+                color: var(--muted);
+                font-size: 12.5px;
+                cursor: pointer;
+                font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+              "
+              onclick="closeSchedModal()"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Notification Preview Modal -->
+    <div class="email-modal-overlay" id="email-modal">
+      <div class="email-box">
+        <div class="email-chrome">
+          <div class="email-dots">
+            <div class="email-dot" style="background: #ff5f57"></div>
+            <div class="email-dot" style="background: #febc2e"></div>
+            <div class="email-dot" style="background: #28c840"></div>
+          </div>
+          <div class="email-bar">📧 Gmail · MedCare Phòng Khám</div>
+          <button
+            onclick="closeEmailModal()"
+            style="
+              background: none;
+              border: none;
+              color: #888;
+              cursor: pointer;
+              font-size: 18px;
+              margin-left: 8px;
+            "
+          >
+            ×
+          </button>
+        </div>
+        <div style="padding: 0 12px 12px">
+          <div class="email-content">
+            <div class="email-head">
+              <div class="email-logo-row">
+                <div class="email-logo-ico">🏥</div>
+                <span class="email-logo-txt">MedCare</span>
+              </div>
+              <div class="email-subject" id="email-subject">
+                ✅ Xác nhận lịch khám bệnh
+              </div>
+              <div class="email-date">
+                📨 Gửi tự động · <span id="email-timestamp"></span>
+              </div>
+            </div>
+            <div class="email-body">
+              <div class="email-greeting" id="email-greeting">
+                Kính gửi <b id="email-patient-name">Bệnh nhân</b>,<br />
+                Lịch khám của bạn đã được <b>xác nhận thành công</b>. Vui lòng
+                xem chi tiết bên dưới và xác nhận tham dự.
+              </div>
+              <div class="email-appt-card">
+                <div class="email-appt-row">
+                  <span>🗓️ Ngày khám:</span>
+                  <b id="email-date-val">16/05/2026</b>
+                </div>
+                <div class="email-appt-row">
+                  <span>⏰ Giờ khám:</span>
+                  <b id="email-time-val">09:00 – 10:00</b>
+                </div>
+                <div class="email-appt-row">
+                  <span>👨‍⚕️ Bác sĩ:</span>
+                  <b id="email-doctor-val">BS. Mặc Định</b>
+                </div>
+                <div class="email-appt-row">
+                  <span>🏥 Chuyên khoa:</span>
+                  <b id="email-spec-val">Đa Khoa</b>
+                </div>
+                <div class="email-appt-row">
+                  <span>📍 Phòng:</span> <b>Phòng 101 · Tầng 1</b>
+                </div>
+              </div>
+              <div class="email-qr-section">
+                <div class="email-qr-label">
+                  💳 Thanh toán trước qua VietQR (200,000đ)
+                </div>
+                <img class="email-qr-img" id="email-qr" src="" alt="VietQR" />
+                <div
+                  style="
+                    font-size: 11.5px;
+                    color: var(--muted);
+                    margin-top: 6px;
+                  "
+                >
+                  Quét mã để thanh toán · MB Bank · 0123456789
+                </div>
+              </div>
+              <div
+                style="
+                  font-size: 12.5px;
+                  color: var(--muted);
+                  line-height: 1.6;
+                  margin-top: 12px;
+                "
+              >
+                🔒 Các nút bên dưới sử dụng <b>Secure Token</b> (dùng 1 lần) —
+                bác sĩ có thể xác nhận mà không cần đăng nhập lại.
+              </div>
+            </div>
+            <div class="email-actions">
+              <button
+                class="email-btn-accept"
+                onclick="handleEmailConfirm('accept')"
+              >
+                ✅ Chấp nhận lịch hẹn
+              </button>
+              <button
+                class="email-btn-decline"
+                onclick="handleEmailConfirm('decline')"
+              >
+                ❌ Từ chối / Đổi lịch
+              </button>
+            </div>
+            <div class="email-token">
+              🔑 Token bảo mật:
+              <code id="email-token-val">MC-2026-XXXXXXXX</code> · Hết hạn sau
+              24h
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMR Modal (Hồ sơ Bệnh án Điện tử) -->
+    <div class="emr-overlay" id="emr-modal">
+      <div class="emr-box">
+        <div class="emr-header">
+          <div class="emr-header-row">
+            <div class="emr-title-row">
+              <div class="emr-header-ico">📋</div>
+              <div>
+                <div class="emr-h-title">Lập Hồ Sơ Bệnh Án Điện Tử</div>
+                <div class="emr-h-sub">
+                  Electronic Medical Record · Powered by MedCare EMR System
+                </div>
+              </div>
+            </div>
+            <button class="emr-close" onclick="closeEmrModal()" aria-label="Đóng hồ sơ bệnh án">×</button>
+          </div>
+          <div class="emr-patient-bar">
+            <span>👤</span>
+            <b id="emr-patient-name">Pham Nhat Quang</b>
+            <span style="opacity: 0.6">·</span>
+            <span style="opacity: 0.75" id="emr-appt-info"
+              >Lịch #1 · 10/04/2026 · BS. Mặc Định</span
+            >
+            <span style="margin-left: auto"
+              ><span class="role-doc-badge">🩺 Bác sĩ đang lập</span></span
+            >
+          </div>
+        </div>
+        <div class="emr-body">
+          <!-- AI Patient Brief -->
+          <div class="emr-ai-brief" id="emr-ai-brief">
+            <div class="emr-ai-brief-header">
+              🤖 Tóm tắt bệnh nhân <span class="emr-ai-tag">AI</span>
+            </div>
+            <div class="emr-ai-brief-loading" id="emr-brief-loading">
+              <div class="emr-ai-brief-spin"></div>
+              Claude đang phân tích hồ sơ bệnh nhân…
+            </div>
+            <div class="emr-ai-brief-body" id="emr-brief-text" style="display:none"></div>
+            <div class="emr-ai-brief-warn" id="emr-brief-warn" style="display:none">
+              ⚠️ <span id="emr-brief-warn-msg"></span>
+            </div>
+          </div>
+
+          <!-- Vitals -->
+          <div class="emr-section">
+            <div class="emr-section-title">📊 Chỉ số sinh tồn</div>
+            <div class="emr-vitals-grid">
+              <div class="vital-box">
+                <div class="vital-val" id="v-bp">120/80</div>
+                <div class="vital-lbl">Huyết áp (mmHg)</div>
+                <div class="vital-input-row">
+                  <input
+                    class="vital-mini-input"
+                    id="vi-bp"
+                    type="text"
+                    value="120/80"
+                    oninput="
+                      document.getElementById('v-bp').textContent = this.value
+                    "
+                  />
+                </div>
+              </div>
+              <div class="vital-box">
+                <div class="vital-val" id="v-pulse">78</div>
+                <div class="vital-lbl">Nhịp tim (bpm)</div>
+                <div class="vital-input-row">
+                  <input
+                    class="vital-mini-input"
+                    id="vi-pulse"
+                    type="number"
+                    value="78"
+                    oninput="
+                      document.getElementById('v-pulse').textContent =
+                        this.value
+                    "
+                  />
+                </div>
+              </div>
+              <div class="vital-box">
+                <div class="vital-val" id="v-temp">36.5°</div>
+                <div class="vital-lbl">Nhiệt độ (°C)</div>
+                <div class="vital-input-row">
+                  <input
+                    class="vital-mini-input"
+                    id="vi-temp"
+                    type="number"
+                    step="0.1"
+                    value="36.5"
+                    oninput="
+                      document.getElementById('v-temp').textContent =
+                        this.value + '°'
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Diagnosis -->
+          <div class="emr-section">
+            <div class="emr-section-title">🔍 Chẩn đoán & Điều trị</div>
+            <div class="emr-grid">
+              <div class="emr-fg">
+                <label class="emr-label">Mã ICD-10</label>
+                <select class="emr-select" id="emr-icd">
+                  <option value="">-- Chọn mã bệnh --</option>
+                  <option value="K29">K29 · Viêm dạ dày</option>
+                  <option value="I10">I10 · Tăng huyết áp</option>
+                  <option value="M54">M54 · Đau lưng</option>
+                  <option value="J06">J06 · Viêm hô hấp trên</option>
+                  <option value="E11">E11 · Đái tháo đường type 2</option>
+                  <option value="I25">I25 · Bệnh mạch vành mãn</option>
+                </select>
+              </div>
+              <div class="emr-fg">
+                <label class="emr-label">Mức độ</label>
+                <select class="emr-select">
+                  <option>Nhẹ</option>
+                  <option selected>Trung bình</option>
+                  <option>Nặng</option>
+                  <option>Cấp cứu</option>
+                </select>
+              </div>
+              <div class="emr-fg full">
+                <label class="emr-label">Chẩn đoán chi tiết</label>
+                <textarea
+                  class="emr-textarea"
+                  id="emr-diagnosis"
+                  placeholder="Mô tả chẩn đoán lâm sàng, kết quả xét nghiệm, hướng điều trị…"
+                ></textarea>
+              </div>
+              <div class="emr-fg full">
+                <label class="emr-label">Ghi chú bác sĩ</label>
+                <textarea
+                  class="emr-textarea"
+                  style="min-height: 60px"
+                  placeholder="Dặn dò bệnh nhân, chế độ ăn, tái khám…"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <!-- Prescription -->
+          <div class="emr-section">
+            <div class="emr-section-title">💊 Đơn thuốc</div>
+            <table class="emr-drug-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tên thuốc</th>
+                  <th>Liều lượng</th>
+                  <th>Cách dùng</th>
+                  <th>Số ngày</th>
+                </tr>
+              </thead>
+              <tbody id="drug-tbody">
+                <tr>
+                  <td style="color: var(--muted); font-weight: 600">1</td>
+                  <td>
+                    <input
+                      class="emr-drug-input"
+                      placeholder="Omeprazole 20mg"
+                      value="Omeprazole 20mg"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="emr-drug-input"
+                      placeholder="1 viên"
+                      value="1 viên/lần"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="emr-drug-input"
+                      placeholder="Uống trước ăn"
+                      value="Uống trước ăn 30'"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="emr-drug-input"
+                      type="number"
+                      value="14"
+                      style="width: 60px"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: var(--muted); font-weight: 600">2</td>
+                  <td>
+                    <input class="emr-drug-input" placeholder="Tên thuốc…" />
+                  </td>
+                  <td><input class="emr-drug-input" placeholder="Liều…" /></td>
+                  <td>
+                    <input class="emr-drug-input" placeholder="Cách dùng…" />
+                  </td>
+                  <td>
+                    <input
+                      class="emr-drug-input"
+                      type="number"
+                      placeholder="7"
+                      style="width: 60px"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="btn-add-drug" onclick="addDrugRow()">
+              + Thêm thuốc
+            </button>
+          </div>
+          <!-- Billing -->
+          <div class="emr-section">
+            <div class="emr-section-title">💰 Thanh toán</div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+              <select id="emr-spec" class="emr-input" style="max-width:200px">
+                <option value="DaKhoa">Đa Khoa (150.000đ)</option>
+                <option value="TimMach">Nội Tim Mạch (300.000đ)</option>
+                <option value="TieuHoa">Nội Tiêu Hóa (250.000đ)</option>
+                <option value="CoXuongKhop">Cơ Xương Khớp (250.000đ)</option>
+                <option value="ThanKinh">Thần Kinh (300.000đ)</option>
+                <option value="HoHap">Hô Hấp (250.000đ)</option>
+              </select>
+              <button type="button" class="btn-add-drug" onclick="emrAutoPrice()" style="white-space:nowrap">
+                💰 Tính giá tự động
+              </button>
+              <span style="font-size:11.5px;color:var(--muted)">Phí khám theo chuyên khoa + tiền thuốc theo đơn</span>
+            </div>
+            <div id="emr-drug-breakdown" style="display:none;font-size:12px;background:var(--blue-l);border-radius:8px;padding:10px 12px;margin-bottom:12px"></div>
+            <div class="emr-grid">
+              <div class="emr-fg">
+                <label class="emr-label">Phí khám</label>
+                <input
+                  class="emr-input"
+                  type="number"
+                  value="150000"
+                  id="emr-fee1"
+                  oninput="calcTotal()"
+                />
+              </div>
+              <div class="emr-fg">
+                <label class="emr-label">Phí thuốc</label>
+                <input
+                  class="emr-input"
+                  type="number"
+                  value="50000"
+                  id="emr-fee2"
+                  oninput="calcTotal()"
+                />
+              </div>
+              <div class="emr-fg">
+                <label class="emr-label">Phí xét nghiệm</label>
+                <input
+                  class="emr-input"
+                  type="number"
+                  value="0"
+                  id="emr-fee3"
+                  oninput="calcTotal()"
+                />
+              </div>
+              <div
+                class="emr-fg"
+                style="
+                  background: var(--blue-l);
+                  border-radius: 9px;
+                  padding: 10px 13px;
+                  border: 1.5px solid rgba(16, 87, 164, 0.2);
+                "
+              >
+                <label class="emr-label">Tổng cộng</label>
+                <div
+                  style="
+                    font-family: &quot;Fraunces&quot;, serif;
+                    font-size: 22px;
+                    font-weight: 700;
+                    color: var(--blue);
+                  "
+                  id="emr-total"
+                >
+                  —
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="emr-footer">
+          <button class="btn-emr-pdf" onclick="generatePdfAndQr()">
+            📄 Xuất PDF + Tạo VietQR
+          </button>
+          <button class="btn-emr-save" onclick="saveEmr()">
+            💾 Lưu Bệnh Án & Gửi Email
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VietQR Modal -->
+    <div class="qr-overlay" id="qr-modal">
+      <div class="qr-box">
+        <div class="qr-title">💳 Thanh toán VietQR</div>
+        <div class="qr-sub">Quét mã QR để thanh toán nhanh</div>
+        <div class="qr-amount" id="qr-amount">200,000đ</div>
+        <div class="qr-amount-lbl">Phí khám + Thuốc · MedCare Phòng Khám</div>
+        <div class="qr-img-wrap">
+          <img
+            id="qr-img"
+            src=""
+            alt="VietQR Code"
+            class="email-qr-img"
+            style="width: 200px; height: 200px"
+          />
+        </div>
+        <div class="qr-bank-info">
+          <div class="qr-bank-row">
+            <span class="qr-bank-lbl">Ngân hàng</span
+            ><span class="qr-bank-val">MB Bank</span>
+          </div>
+          <div class="qr-bank-row">
+            <span class="qr-bank-lbl">Số tài khoản</span
+            ><span class="qr-bank-val">0123456789</span>
+          </div>
+          <div class="qr-bank-row">
+            <span class="qr-bank-lbl">Chủ tài khoản</span
+            ><span class="qr-bank-val">PHONG KHAM MEDCARE</span>
+          </div>
+          <div class="qr-bank-row">
+            <span class="qr-bank-lbl">Nội dung CK</span
+            ><span class="qr-bank-val" id="qr-content">MEDCARE KHAM 001</span>
+          </div>
+        </div>
+        <button class="btn-qr-copy" onclick="copyQrInfo()">
+          📋 Sao chép thông tin CK
+        </button>
+        <button class="btn-qr-close" onclick="closeQrModal()">Đóng</button>
+      </div>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <button id="chatbot-fab" onclick="toggleChatbot()" aria-label="Mở trợ lý AI MedBot" title="Trợ lý AI MedBot">
+      🤖
+      <div class="fab-ping" id="fab-ping" aria-hidden="true">1</div>
+    </button>
+    <div id="chatbot-panel">
+      <div class="cb-header">
+        <div class="cb-avatar">🤖</div>
+        <div class="cb-hinfo">
+          <div class="cb-hname">MedBot AI · BS. Phạm Nhật Quang</div>
+          <div class="cb-hstatus">Đang trực tuyến · Phân tích triệu chứng</div>
+        </div>
+        <button class="cb-close" onclick="toggleChatbot()" aria-label="Đóng cửa sổ trò chuyện">×</button>
+      </div>
+      <div
+        class="cb-history-banner"
+        id="cb-history-banner"
+        style="display: none"
+        onclick="showChatHistory()"
+      >
+        📂 <span id="cb-history-label">Xem lịch sử trò chuyện</span>
+      </div>
+      <div class="cb-messages" id="cb-messages"></div>
+      <div class="cb-suggestions" id="cb-suggestions">
+        <button class="cb-sug" onclick="cbSend('Tôi bị đau ngực')">
+          💔 Đau ngực
+        </button>
+        <button class="cb-sug" onclick="cbSend('Tôi bị đau bụng')">
+          🤢 Đau bụng
+        </button>
+        <button class="cb-sug" onclick="cbSend('Tôi bị đau lưng')">
+          🦴 Đau lưng
+        </button>
+        <button class="cb-sug" onclick="cbSend('Đặt lịch khám')">
+          📅 Đặt lịch
+        </button>
+      </div>
+      <div class="cb-input-row">
+        <input
+          class="cb-input"
+          id="cb-input"
+          placeholder="Mô tả triệu chứng hoặc câu hỏi…"
+          aria-label="Nhập tin nhắn cho trợ lý AI"
+          onkeydown="if (event.key === 'Enter') cbSend();"
+        />
+        <button class="cb-send" onclick="cbSend()" aria-label="Gửi tin nhắn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 21l21-9L2 3v7l15 2-15 2z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+      <div class="toast-ico" id="toast-ico">✅</div>
+      <div>
+        <div class="toast-title" id="toast-title"></div>
+        <div class="toast-msg" id="toast-msg"></div>
+      </div>
+      <button class="toast-close" onclick="hideToast()" aria-label="Đóng thông báo">×</button>
+    </div>
+
+    <!-- ══════════════════════════════════════
+     EMERGENCY ALERT MODAL
+══════════════════════════════════════ -->
+    <div
+      id="emergency-alert-modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: white;
+          border-radius: 20px;
+          padding: 32px;
+          max-width: 420px;
+          width: 90%;
+          box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
+          border: 3px solid #ef4444;
+          animation: fade-up 0.35s ease-out both;
+          text-align: center;
+        "
+      >
+        <div
+          style="
+            width: 72px;
+            height: 72px;
+            background: #fef2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 16px;
+            animation: blink 1s infinite;
+          "
+        >
+          🚨
+        </div>
+        <div
+          style="
+            font-family: &quot;Fraunces&quot;, serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 8px;
+          "
+        >
+          CẢNH BÁO KHẨN CẤP
+        </div>
+        <div
+          id="em-analysis"
+          style="
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            background: #fef2f2;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #fca5a5;
+          "
+        ></div>
+        <div
+          style="
+            font-size: 13.5px;
+            color: #991b1b;
+            font-weight: 700;
+            margin-bottom: 20px;
+          "
+        >
+          ⚠️ Triệu chứng của bạn có thể nguy hiểm đến tính mạng.<br />Vui lòng
+          gọi cấp cứu ngay hoặc đến phòng cấp cứu!
+        </div>
+        <div style="display: flex; gap: 10px">
+          <a
+            href="tel:115"
+            style="
+              flex: 1;
+              padding: 13px;
+              background: #ef4444;
+              color: white;
+              border-radius: 10px;
+              font-size: 15px;
+              font-weight: 800;
+              text-decoration: none;
+              display: block;
+            "
+            >📞 Gọi 115</a
+          >
+          <a
+            href="tel:19001234"
+            style="
+              flex: 1;
+              padding: 13px;
+              background: #1057a4;
+              color: white;
+              border-radius: 10px;
+              font-size: 15px;
+              font-weight: 800;
+              text-decoration: none;
+              display: block;
+            "
+            >☎️ Hotline</a
+          >
+        </div>
+        <button
+          onclick="closeEmergencyAlert()"
+          style="
+            margin-top: 12px;
+            width: 100%;
+            padding: 11px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            color: #6b7280;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+          "
+        >
+          Tôi đã hiểu, tiếp tục đặt lịch
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+     MULTI-STEP BOOKING MODAL
+══════════════════════════════════════ -->
+    <div
+      id="multistep-modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9990;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(6px);
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: white;
+          border-radius: 20px;
+          max-width: 540px;
+          width: 94%;
+          max-height: 88vh;
+          overflow-y: auto;
+          box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25);
+          animation: fade-up 0.35s ease-out both;
+        "
+      >
+        <!-- Header -->
+        <div
+          style="
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            z-index: 1;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-bottom: 14px;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;Fraunces&quot;, serif;
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--txt);
+              "
+            >
+              📅 Đặt lịch khám
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <span
+                id="ms-step-label"
+                style="font-size: 12px; color: var(--muted)"
+                >Bước 1/5</span
+              >
+              <button
+                onclick="closeMultiStepBooking()"
+                style="
+                  width: 30px;
+                  height: 30px;
+                  border: none;
+                  background: var(--bg);
+                  border-radius: 50%;
+                  cursor: pointer;
+                  font-size: 16px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <!-- Progress bar -->
+          <div
+            style="
+              background: #e5e7eb;
+              border-radius: 100px;
+              height: 5px;
+              margin-bottom: 12px;
+            "
+          >
+            <div
+              id="ms-progress-bar"
+              style="
+                height: 5px;
+                background: linear-gradient(90deg, var(--blue), var(--teal));
+                border-radius: 100px;
+                transition: width 0.4s ease;
+                width: 0%;
+              "
+            ></div>
+          </div>
+          <!-- Step dots -->
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              padding: 0 4px;
+            "
+          >
+            <div style="text-align: center; flex: 1">
+              <div
+                class="ms-step-dot active current"
+                data-step="1"
+                style="
+                  width: 28px;
+                  height: 28px;
+                  border-radius: 50%;
+                  border: 2px solid #e5e7eb;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                  font-weight: 700;
+                  color: #9ca3af;
+                  margin: 0 auto 4px;
+                  transition: 0.3s;
+                "
+              >
+                1
+              </div>
+              <div style="font-size: 10px; color: #9ca3af; white-space: nowrap">
+                Triệu chứng
+              </div>
+            </div>
+            <div style="text-align: center; flex: 1">
+              <div
+                class="ms-step-dot"
+                data-step="2"
+                style="
+                  width: 28px;
+                  height: 28px;
+                  border-radius: 50%;
+                  border: 2px solid #e5e7eb;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                  font-weight: 700;
+                  color: #9ca3af;
+                  margin: 0 auto 4px;
+                  transition: 0.3s;
+                "
+              >
+                2
+              </div>
+              <div style="font-size: 10px; color: #9ca3af; white-space: nowrap">
+                Chuyên khoa
+              </div>
+            </div>
+            <div style="text-align: center; flex: 1">
+              <div
+                class="ms-step-dot"
+                data-step="3"
+                style="
+                  width: 28px;
+                  height: 28px;
+                  border-radius: 50%;
+                  border: 2px solid #e5e7eb;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                  font-weight: 700;
+                  color: #9ca3af;
+                  margin: 0 auto 4px;
+                  transition: 0.3s;
+                "
+              >
+                3
+              </div>
+              <div style="font-size: 10px; color: #9ca3af; white-space: nowrap">
+                Bác sĩ
+              </div>
+            </div>
+            <div style="text-align: center; flex: 1">
+              <div
+                class="ms-step-dot"
+                data-step="4"
+                style="
+                  width: 28px;
+                  height: 28px;
+                  border-radius: 50%;
+                  border: 2px solid #e5e7eb;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                  font-weight: 700;
+                  color: #9ca3af;
+                  margin: 0 auto 4px;
+                  transition: 0.3s;
+                "
+              >
+                4
+              </div>
+              <div style="font-size: 10px; color: #9ca3af; white-space: nowrap">
+                Chọn giờ
+              </div>
+            </div>
+            <div style="text-align: center; flex: 1">
+              <div
+                class="ms-step-dot"
+                data-step="5"
+                style="
+                  width: 28px;
+                  height: 28px;
+                  border-radius: 50%;
+                  border: 2px solid #e5e7eb;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                  font-weight: 700;
+                  color: #9ca3af;
+                  margin: 0 auto 4px;
+                  transition: 0.3s;
+                "
+              >
+                5
+              </div>
+              <div style="font-size: 10px; color: #9ca3af; white-space: nowrap">
+                Xác nhận
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step panels -->
+        <div style="padding: 24px">
+          <!-- Step 1: Triệu chứng -->
+          <div class="ms-step-panel">
+            <div
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--txt);
+                margin-bottom: 4px;
+              "
+            >
+              Bạn đang gặp triệu chứng gì?
+            </div>
+            <div
+              style="font-size: 13px; color: var(--muted); margin-bottom: 16px"
+            >
+              AI sẽ phân tích và gợi ý chuyên khoa phù hợp
+            </div>
+            <div style="margin-bottom: 14px">
+              <label
+                style="
+                  font-size: 11.5px;
+                  font-weight: 700;
+                  color: var(--muted);
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Họ và tên</label
+              >
+              <input
+                id="ms-patient-name"
+                class="af-input"
+                type="text"
+                placeholder="Nguyễn Văn A"
+                style="width: 100%"
+              />
+            </div>
+            <div style="margin-bottom: 14px">
+              <label
+                style="
+                  font-size: 11.5px;
+                  font-weight: 700;
+                  color: var(--muted);
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Số điện thoại</label
+              >
+              <input
+                id="ms-phone"
+                class="af-input"
+                type="tel"
+                placeholder="0901 234 567"
+                style="width: 100%"
+              />
+            </div>
+            <div style="margin-bottom: 14px">
+              <label
+                style="
+                  font-size: 11.5px;
+                  font-weight: 700;
+                  color: var(--muted);
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Mô tả triệu chứng</label
+              >
+              <textarea
+                id="ms-symptom"
+                class="af-textarea"
+                placeholder="Ví dụ: Tôi bị đau tức ngực 2 ngày nay, khó thở khi gắng sức…"
+                style="width: 100%; min-height: 90px"
+              ></textarea>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 7px;
+                margin-bottom: 8px;
+              "
+            >
+              <button
+                onclick="
+                  document.getElementById('ms-symptom').value = 'Đau đầu'
+                "
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Đau đầu
+              </button>
+              <button
+                onclick="
+                  document.getElementById('ms-symptom').value = 'Đau ngực'
+                "
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Đau ngực
+              </button>
+              <button
+                onclick="
+                  document.getElementById('ms-symptom').value = 'Đau bụng'
+                "
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Đau bụng
+              </button>
+              <button
+                onclick="
+                  document.getElementById('ms-symptom').value = 'Khó thở'
+                "
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Khó thở
+              </button>
+              <button
+                onclick="
+                  document.getElementById('ms-symptom').value = 'Mất ngủ'
+                "
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Mất ngủ
+              </button>
+              <button
+                onclick="
+                  document.getElementById('ms-symptom').value = 'Buồn nôn'
+                "
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Buồn nôn
+              </button>
+              <button
+                onclick="document.getElementById('ms-symptom').value = 'Sốt'"
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Sốt
+              </button>
+              <button
+                onclick="
+                  document.getElementById('ms-symptom').value = 'Đau lưng'
+                "
+                style="
+                  padding: 5px 12px;
+                  background: var(--blue-l);
+                  border: 1px solid var(--border);
+                  border-radius: 100px;
+                  font-size: 12px;
+                  color: var(--blue);
+                  cursor: pointer;
+                  font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+                "
+              >
+                Đau lưng
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Chuyên khoa -->
+          <div class="ms-step-panel" style="display: none">
+            <div
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--txt);
+                margin-bottom: 16px;
+              "
+            >
+              Chọn chuyên khoa
+            </div>
+            <div
+              id="ms-triage-result"
+              style="
+                background: var(--blue-l);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 12px;
+                margin-bottom: 16px;
+                font-size: 13px;
+                color: var(--blue);
+                display: none;
+              "
+            ></div>
+            <div style="display: grid; gap: 10px">
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 10px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-spec-r"
+                  value="TimMach"
+                  id="ms-spec-TimMach"
+                  style="display: none"
+                  onclick="
+                    document.getElementById('ms-specialty-value').value =
+                      'TimMach';
+                    document
+                      .querySelectorAll('[name=ms-spec-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                        (r.closest('label').style.background = ''),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 38px;
+                    height: 38px;
+                    background: var(--blue-l);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                  "
+                >
+                  ❤️
+                </div>
+                <div>
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    Nội Tim Mạch
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Huyết áp, nhịp tim, mạch máu
+                  </div>
+                </div>
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 10px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-spec-r"
+                  value="TieuHoa"
+                  id="ms-spec-TieuHoa"
+                  style="display: none"
+                  onclick="
+                    document.getElementById('ms-specialty-value').value =
+                      'TieuHoa';
+                    document
+                      .querySelectorAll('[name=ms-spec-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 38px;
+                    height: 38px;
+                    background: var(--blue-l);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                  "
+                >
+                  🫁
+                </div>
+                <div>
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    Nội Tiêu Hóa
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Dạ dày, ruột, gan mật
+                  </div>
+                </div>
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 10px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-spec-r"
+                  value="CXK"
+                  id="ms-spec-CXK"
+                  style="display: none"
+                  onclick="
+                    document.getElementById('ms-specialty-value').value = 'CXK';
+                    document
+                      .querySelectorAll('[name=ms-spec-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 38px;
+                    height: 38px;
+                    background: var(--blue-l);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                  "
+                >
+                  🦴
+                </div>
+                <div>
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    Cơ Xương Khớp
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Đau lưng, cổ vai, khớp gối
+                  </div>
+                </div>
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 10px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-spec-r"
+                  value="ThanKinh"
+                  id="ms-spec-ThanKinh"
+                  style="display: none"
+                  onclick="
+                    document.getElementById('ms-specialty-value').value =
+                      'ThanKinh';
+                    document
+                      .querySelectorAll('[name=ms-spec-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 38px;
+                    height: 38px;
+                    background: var(--blue-l);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                  "
+                >
+                  🧠
+                </div>
+                <div>
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    Thần Kinh
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Đau đầu, mất ngủ, chóng mặt
+                  </div>
+                </div>
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 10px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-spec-r"
+                  value="HoHap"
+                  id="ms-spec-HoHap"
+                  style="display: none"
+                  onclick="
+                    document.getElementById('ms-specialty-value').value =
+                      'HoHap';
+                    document
+                      .querySelectorAll('[name=ms-spec-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 38px;
+                    height: 38px;
+                    background: var(--blue-l);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                  "
+                >
+                  💨
+                </div>
+                <div>
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    Hô Hấp
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Ho, khó thở, viêm phổi
+                  </div>
+                </div>
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 10px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-spec-r"
+                  value="DaKhoa"
+                  id="ms-spec-DaKhoa"
+                  style="display: none"
+                  onclick="
+                    document.getElementById('ms-specialty-value').value =
+                      'DaKhoa';
+                    document
+                      .querySelectorAll('[name=ms-spec-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 38px;
+                    height: 38px;
+                    background: var(--blue-l);
+                    border-radius: 9px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                  "
+                >
+                  🏥
+                </div>
+                <div>
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    Đa Khoa
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Khám tổng quát, sàng lọc
+                  </div>
+                </div>
+              </label>
+            </div>
+            <input type="hidden" id="ms-specialty-value" />
+            <select id="ms-specialty" style="display: none">
+              <option value="TimMach">Nội Tim Mạch</option>
+              <option value="TieuHoa">Nội Tiêu Hóa</option>
+              <option value="CXK">Cơ Xương Khớp</option>
+              <option value="ThanKinh">Thần Kinh</option>
+              <option value="HoHap">Hô Hấp</option>
+              <option value="DaKhoa">Đa Khoa</option>
+            </select>
+          </div>
+
+          <!-- Step 3: Bác sĩ -->
+          <div class="ms-step-panel" style="display: none">
+            <div
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--txt);
+                margin-bottom: 16px;
+              "
+            >
+              Chọn bác sĩ
+            </div>
+            <div style="display: grid; gap: 12px">
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 12px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-doc-r"
+                  value="doc-1"
+                  style="display: none"
+                  onclick="
+                    document
+                      .querySelectorAll('[name=ms-doc-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                        (r.closest('label').style.background = ''),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 46px;
+                    height: 46px;
+                    border-radius: 50%;
+                    background: #1057a4;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                    font-weight: 700;
+                    flex-shrink: 0;
+                  "
+                >
+                  MĐ
+                </div>
+                <div style="flex: 1">
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    BS. Nguyễn Thanh Tùng
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Đa Khoa · 20 năm kinh nghiệm
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      margin-top: 4px;
+                    "
+                  >
+                    <span style="font-size: 12px; color: #f59e0b">★ 4.9</span>
+                    <span
+                      style="
+                        background: #ecfdf5;
+                        color: #065f46;
+                        padding: 2px 8px;
+                        border-radius: 100px;
+                        font-size: 11px;
+                        font-weight: 700;
+                      "
+                      >Còn chỗ</span
+                    >
+                  </div>
+                </div>
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 12px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-doc-r"
+                  value="doc-2"
+                  style="display: none"
+                  onclick="
+                    document
+                      .querySelectorAll('[name=ms-doc-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                        (r.closest('label').style.background = ''),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 46px;
+                    height: 46px;
+                    border-radius: 50%;
+                    background: #00b896;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                    font-weight: 700;
+                    flex-shrink: 0;
+                  "
+                >
+                  TH
+                </div>
+                <div style="flex: 1">
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    BS. Lê Thị Hương
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Nội Tiêu Hóa · 15 năm kinh nghiệm
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      margin-top: 4px;
+                    "
+                  >
+                    <span style="font-size: 12px; color: #f59e0b">★ 4.8</span>
+                    <span
+                      style="
+                        background: #ecfdf5;
+                        color: #065f46;
+                        padding: 2px 8px;
+                        border-radius: 100px;
+                        font-size: 11px;
+                        font-weight: 700;
+                      "
+                      >Còn chỗ</span
+                    >
+                  </div>
+                </div>
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 14px;
+                  border: 1.5px solid var(--border);
+                  border-radius: 12px;
+                  cursor: pointer;
+                  transition: 0.2s;
+                "
+                onmouseover="this.style.borderColor = 'var(--blue)'"
+                onmouseout="
+                  if (!this.querySelector('input').checked)
+                    this.style.borderColor = 'var(--border)';
+                "
+              >
+                <input
+                  type="radio"
+                  name="ms-doc-r"
+                  value="doc-3"
+                  style="display: none"
+                  onclick="
+                    document
+                      .querySelectorAll('[name=ms-doc-r]')
+                      .forEach(
+                        (r) =>
+                          (r.closest('label').style.borderColor =
+                            'var(--border)'),
+                        (r.closest('label').style.background = ''),
+                      );
+                    this.closest('label').style.borderColor = 'var(--blue)';
+                    this.closest('label').style.background = 'var(--blue-l)';
+                  "
+                />
+                <div
+                  style="
+                    width: 46px;
+                    height: 46px;
+                    border-radius: 50%;
+                    background: #e53935;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                    font-weight: 700;
+                    flex-shrink: 0;
+                  "
+                >
+                  TM
+                </div>
+                <div style="flex: 1">
+                  <div
+                    style="font-size: 14px; font-weight: 700; color: var(--txt)"
+                  >
+                    BS. Phạm Văn Dũng
+                  </div>
+                  <div style="font-size: 12px; color: var(--muted)">
+                    Nội Tim Mạch · 18 năm kinh nghiệm
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      margin-top: 4px;
+                    "
+                  >
+                    <span style="font-size: 12px; color: #f59e0b">★ 4.9</span>
+                    <span
+                      style="
+                        background: #ecfdf5;
+                        color: #065f46;
+                        padding: 2px 8px;
+                        border-radius: 100px;
+                        font-size: 11px;
+                        font-weight: 700;
+                      "
+                      >Còn chỗ</span
+                    >
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 4: Chọn giờ -->
+          <div class="ms-step-panel" style="display: none">
+            <div
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--txt);
+                margin-bottom: 4px;
+              "
+            >
+              Chọn ngày & giờ khám
+            </div>
+            <div
+              style="font-size: 13px; color: var(--muted); margin-bottom: 16px"
+            >
+              Chọn ngày và khung giờ phù hợp với bạn
+            </div>
+            <div style="margin-bottom: 16px">
+              <label
+                style="
+                  font-size: 11.5px;
+                  font-weight: 700;
+                  color: var(--muted);
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Ngày khám</label
+              >
+              <input
+                id="ms-date"
+                type="date"
+                class="af-input"
+                style="width: 100%"
+              />
+            </div>
+            <div
+              style="
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 8px;
+              "
+            >
+              Khung giờ
+            </div>
+            <div
+              id="ms-timeslots"
+              style="
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+              "
+            ></div>
+            <div style="margin-top: 12px; font-size: 12px; color: var(--muted)">
+              <span
+                style="
+                  display: inline-block;
+                  width: 10px;
+                  height: 10px;
+                  background: #e5e7eb;
+                  border-radius: 3px;
+                  margin-right: 4px;
+                "
+              ></span
+              >Hết chỗ
+            </div>
+          </div>
+
+          <!-- Step 5: Xác nhận -->
+          <div class="ms-step-panel" style="display: none">
+            <div
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--txt);
+                margin-bottom: 16px;
+              "
+            >
+              Xác nhận thông tin đặt lịch
+            </div>
+            <div id="ms-summary"></div>
+            <div
+              style="
+                margin-top: 14px;
+                background: #fffbeb;
+                border: 1px solid #fde68a;
+                border-radius: 10px;
+                padding: 12px;
+                font-size: 12.5px;
+                color: #78350f;
+              "
+            >
+              💡 Sau khi đặt lịch, bạn sẽ nhận email xác nhận và mã QR check-in
+              tại phòng khám.
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer buttons -->
+        <div
+          style="
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-radius: 0 0 20px 20px;
+          "
+        >
+          <button
+            id="ms-btn-prev"
+            onclick="msPrev()"
+            style="
+              padding: 11px 20px;
+              background: var(--bg);
+              border: 1.5px solid var(--border);
+              border-radius: 10px;
+              font-size: 14px;
+              font-weight: 600;
+              color: var(--muted);
+              cursor: pointer;
+              font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+              visibility: hidden;
+            "
+          >
+            ← Quay lại
+          </button>
+          <button
+            id="ms-btn-next"
+            onclick="msNext()"
+            style="
+              flex: 1;
+              padding: 11px;
+              background: var(--blue);
+              color: white;
+              border: none;
+              border-radius: 10px;
+              font-size: 14px;
+              font-weight: 700;
+              cursor: pointer;
+              font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+            "
+          >
+            Tiếp theo →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+     QUEUE SYSTEM WIDGET (fixed bottom-left)
+══════════════════════════════════════ -->
+    <div
+      id="queue-widget"
+      style="
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        z-index: 800;
+        font-family: &quot;Be Vietnam Pro&quot;, sans-serif;
+      "
+    >
+      <div
+        id="queue-panel"
+        style="
+          display: none;
+          background: white;
+          border-radius: 16px;
+          padding: 18px;
+          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+          border: 1px solid var(--border);
+          width: 260px;
+          margin-bottom: 10px;
+          animation: fade-up 0.3s ease-out;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+          "
+        >
+          <div style="font-size: 14px; font-weight: 800; color: var(--txt)">
+            🏥 Hàng chờ hôm nay
+          </div>
+          <button
+            onclick="
+              document.getElementById('queue-panel').style.display = 'none'
+            "
+            style="
+              border: none;
+              background: none;
+              cursor: pointer;
+              font-size: 18px;
+              color: var(--muted);
+            "
+          >
+            ×
+          </button>
+        </div>
+        <div style="display: grid; gap: 8px">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              padding: 9px 11px;
+              background: var(--bg);
+              border-radius: 9px;
+            "
+          >
+            <span style="font-size: 18px">❤️</span>
+            <div style="flex: 1">
+              <div
+                style="font-size: 12.5px; font-weight: 700; color: var(--txt)"
+              >
+                Tim Mạch
+              </div>
+              <div style="font-size: 11.5px; color: var(--muted)">
+                Chờ: ~15 phút
+              </div>
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #ef4444;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 800;
+              "
+            >
+              3
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              padding: 9px 11px;
+              background: var(--bg);
+              border-radius: 9px;
+            "
+          >
+            <span style="font-size: 18px">🫁</span>
+            <div style="flex: 1">
+              <div
+                style="font-size: 12.5px; font-weight: 700; color: var(--txt)"
+              >
+                Tiêu Hóa
+              </div>
+              <div style="font-size: 11.5px; color: var(--muted)">
+                Chờ: ~35 phút
+              </div>
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #f59e0b;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 800;
+              "
+            >
+              7
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              padding: 9px 11px;
+              background: var(--bg);
+              border-radius: 9px;
+            "
+          >
+            <span style="font-size: 18px">🦴</span>
+            <div style="flex: 1">
+              <div
+                style="font-size: 12.5px; font-weight: 700; color: var(--txt)"
+              >
+                Cơ Xương Khớp
+              </div>
+              <div style="font-size: 11.5px; color: var(--muted)">
+                Chờ: ~10 phút
+              </div>
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #10b981;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 800;
+              "
+            >
+              2
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              padding: 9px 11px;
+              background: var(--bg);
+              border-radius: 9px;
+            "
+          >
+            <span style="font-size: 18px">🏥</span>
+            <div style="flex: 1">
+              <div
+                style="font-size: 12.5px; font-weight: 700; color: var(--txt)"
+              >
+                Đa Khoa
+              </div>
+              <div style="font-size: 11.5px; color: var(--muted)">
+                Chờ: ~1 giờ
+              </div>
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #6366f1;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 800;
+              "
+            >
+              12
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 12px;
+            font-size: 11.5px;
+            color: var(--muted);
+            text-align: center;
+          "
+        >
+          Cập nhật tự động mỗi 2 phút
+        </div>
+      </div>
+      <button
+        onclick="toggleQueue()"
+        style="
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          background: var(--blue);
+          border: none;
+          color: white;
+          font-size: 20px;
+          cursor: pointer;
+          box-shadow: 0 6px 20px rgba(16, 87, 164, 0.4);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        🏥
+      </button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- MODAL: TẤT CẢ LỊCH HẸN                     -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div
+      id="all-appt-modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
+        background: rgba(10, 32, 70, 0.55);
+        backdrop-filter: blur(6px);
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      "
+      onclick="if (event.target === this) closeAllAppointmentsModal();"
+    >
+      <div class="am-box">
+        <div class="am-header">
+          <div>
+            <div class="am-title">📋 Quản lý Lịch hẹn</div>
+            <div class="am-sub">
+              Tất cả lịch hẹn trong hệ thống · phongkham.db
+            </div>
+          </div>
+          <button class="am-close" onclick="closeAllAppointmentsModal()" aria-label="Đóng danh sách lịch hẹn">
+            ✕
+          </button>
+        </div>
+        <div class="am-toolbar">
+          <button
+            class="appt-filter-btn active"
+            data-filter="all"
+            onclick="setApptFilter('all')"
+          >
+            Tất cả
+          </button>
+          <button
+            class="appt-filter-btn"
+            data-filter="confirmed"
+            onclick="setApptFilter('confirmed')"
+          >
+            ✅ Đã xác nhận
+          </button>
+          <button
+            class="appt-filter-btn"
+            data-filter="pending"
+            onclick="setApptFilter('pending')"
+          >
+            ⏳ Chờ duyệt
+          </button>
+          <button
+            class="appt-filter-btn"
+            data-filter="cancelled"
+            onclick="setApptFilter('cancelled')"
+          >
+            ❌ Đã hủy
+          </button>
+          <input
+            class="am-search"
+            id="appt-search-input"
+            type="text"
+            placeholder="🔍 Tìm bệnh nhân, bác sĩ..."
+            oninput="onApptSearch(this.value)"
+          />
+        </div>
+        <div class="am-body">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Bệnh nhân</th>
+                <th>Triệu chứng</th>
+                <th>Bác sĩ</th>
+                <th>Ngày hẹn</th>
+                <th>Trạng thái</th>
+                <th class="doctor-only">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="all-appt-tbody">
+              <tr>
+                <td
+                  colspan="7"
+                  style="text-align: center; padding: 40px; color: var(--hint)"
+                >
+                  Đang tải...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- MODAL: OCR NHẬP HỒ SƠ BỆNH ÁN                             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="ocr-overlay" id="ocr-overlay" onclick="if(event.target===this)closeOcrModal()">
+      <div class="ocr-box">
+
+        <!-- ── Header ── -->
+        <div class="ocr-header">
+          <div class="ocr-header-icon">📋</div>
+          <div class="ocr-header-text">
+            <div class="ocr-title">Nhập hồ sơ bệnh án bằng OCR</div>
+            <div class="ocr-subtitle">Claude AI đọc & trích xuất thông tin từ ảnh tài liệu y tế</div>
+          </div>
+          <button class="ocr-close" onclick="closeOcrModal()" aria-label="Đóng cửa sổ OCR">✕</button>
+        </div>
+
+        <!-- ── Step indicator ── -->
+        <div class="ocr-steps">
+          <div class="ocr-step-item active" id="ocr-step-1">
+            <div class="ocr-step-circle">1</div>
+            <div class="ocr-step-label">Chọn bệnh nhân & ảnh</div>
+          </div>
+          <div class="ocr-step-line" id="ocr-line-1"></div>
+          <div class="ocr-step-item" id="ocr-step-2">
+            <div class="ocr-step-circle">2</div>
+            <div class="ocr-step-label">Xác nhận thông tin</div>
+          </div>
+          <div class="ocr-step-line" id="ocr-line-2"></div>
+          <div class="ocr-step-item" id="ocr-step-3">
+            <div class="ocr-step-circle">3</div>
+            <div class="ocr-step-label">Đã lưu</div>
+          </div>
+        </div>
+
+        <!-- ── Body ── -->
+        <div class="ocr-body">
+
+          <!-- STEP 1 -->
+          <div id="ocr-panel-1">
+            <div class="ocr-step1-layout">
+              <!-- Cột trái: chọn bệnh nhân + hướng dẫn -->
+              <div class="ocr-left-col">
+                <div class="ocr-field">
+                  <label>👤 Bệnh nhân <span class="req">*</span></label>
+                  <select id="ocr-patient-select">
+                    <option value="">-- Đang tải danh sách --</option>
+                  </select>
+                </div>
+
+                <div class="ocr-tip">
+                  <div class="ocr-tip-title">💡 Tài liệu được hỗ trợ</div>
+                  <ul>
+                    <li>Hồ sơ bệnh án giấy / phiếu khám</li>
+                    <li>Đơn thuốc từ các cơ sở y tế</li>
+                    <li>Kết quả xét nghiệm, chẩn đoán hình ảnh</li>
+                    <li>Tóm tắt bệnh án xuất viện</li>
+                  </ul>
+                </div>
+
+                <div style="font-size:12px; color:var(--txt2); padding:10px 14px; background:var(--bg); border-radius:10px; border:1px solid var(--border);">
+                  <strong>📌 Lưu ý:</strong> Ảnh rõ nét, đủ ánh sáng sẽ cho kết quả chính xác hơn. Tối đa 5MB.
+                </div>
+              </div>
+
+              <!-- Cột phải: upload + preview -->
+              <div class="ocr-right-col">
+                <input type="file" id="ocr-file-input" accept="image/*" style="display:none" onchange="ocrHandleFile(this.files[0])">
+
+                <div class="ocr-upload-zone" id="ocr-drop-zone"
+                     onclick="document.getElementById('ocr-file-input').click()"
+                     ondragover="event.preventDefault();this.classList.add('drag')"
+                     ondragleave="this.classList.remove('drag')"
+                     ondrop="ocrHandleDrop(event)">
+                  <div class="ocr-upload-icon">🖼️</div>
+                  <div class="ocr-upload-text"><b>Nhấn để chọn ảnh</b><br>hoặc kéo & thả vào đây</div>
+                  <div class="ocr-upload-hint">JPG · PNG · WEBP · tối đa 5MB</div>
+                </div>
+
+                <div class="ocr-preview-wrap" id="ocr-preview-wrap">
+                  <img id="ocr-preview-img" class="ocr-preview-img" src="" alt="preview">
+                  <div class="ocr-preview-bar">
+                    <span class="ocr-preview-name" id="ocr-preview-name">ảnh.jpg</span>
+                    <button class="ocr-change-btn" onclick="document.getElementById('ocr-file-input').click()">🔄 Đổi ảnh</button>
+                  </div>
+                </div>
+
+                <!-- Scanning state -->
+                <div class="ocr-scanning" id="ocr-scanning">
+                  <div class="ocr-scan-visual">🔍</div>
+                  <div class="ocr-scan-title">Claude đang phân tích…</div>
+                  <div class="ocr-scan-txt">AI đang đọc và trích xuất thông tin y tế</div>
+                  <div class="ocr-scan-steps">
+                    <span class="ocr-scan-step-dot active">Nhận ảnh</span>
+                    <span class="ocr-scan-step-dot">Phân tích văn bản</span>
+                    <span class="ocr-scan-step-dot">Trích xuất dữ liệu</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div id="ocr-panel-2" style="display:none">
+            <div class="ocr-step2-layout">
+              <!-- Cột trái: form xác nhận -->
+              <div class="ocr-form-col">
+                <div class="ocr-result-banner">
+                  <span style="font-size:20px">✅</span>
+                  <div>
+                    <div style="font-weight:700">Trích xuất thành công!</div>
+                    <div style="font-size:12px;opacity:.8">Kiểm tra và chỉnh sửa nếu cần, sau đó nhấn Lưu.</div>
+                  </div>
+                </div>
+
+                <div class="ocr-row">
+                  <div class="ocr-field">
+                    <label>📅 Ngày khám <span class="req">*</span></label>
+                    <input type="date" id="ocr-date">
+                  </div>
+                  <div class="ocr-field">
+                    <label>👨‍⚕️ Bác sĩ phụ trách</label>
+                    <input type="text" id="ocr-doctor-name" placeholder="Từ tài liệu (nếu có)">
+                  </div>
+                </div>
+
+                <div class="ocr-field">
+                  <label>🔬 Chẩn đoán <span class="req">*</span></label>
+                  <textarea id="ocr-diagnosis" rows="3" placeholder="Chẩn đoán bệnh lý..."></textarea>
+                </div>
+
+                <div class="ocr-field">
+                  <label>💊 Đơn thuốc / Phác đồ điều trị</label>
+                  <textarea id="ocr-prescription" rows="4" placeholder="Tên thuốc, liều dùng, cách dùng..."></textarea>
+                </div>
+
+                <div class="ocr-field">
+                  <label>📝 Ghi chú & kết quả xét nghiệm</label>
+                  <textarea id="ocr-notes" rows="3" placeholder="Kết quả XN, lưu ý, chỉ định..."></textarea>
+                </div>
+              </div>
+
+              <!-- Cột phải: ảnh thu nhỏ + tiền sử -->
+              <div class="ocr-sidebar">
+                <div class="ocr-img-side" id="ocr-img-side">
+                  <img id="ocr-preview-img-2" src="" alt="tài liệu">
+                  <div class="ocr-img-side-label">📄 Tài liệu đang nhập</div>
+                </div>
+
+                <div class="ocr-history-panel" id="ocr-history-panel" style="display:none">
+                  <div class="ocr-history-header">📋 Tiền sử bệnh án</div>
+                  <div class="ocr-history-body" id="ocr-history-list"></div>
+                </div>
+
+                <div style="font-size:12px; color:var(--txt2); padding:10px 12px; background:var(--bg); border-radius:10px; border:1px solid var(--border);">
+                  ⚠️ Thông tin sau khi lưu sẽ được chatbot AI sử dụng để tư vấn bệnh nhân.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div id="ocr-panel-3" style="display:none">
+            <div style="text-align:center; padding:32px 20px">
+              <div style="width:72px;height:72px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px;">✅</div>
+              <div style="font-size:18px;font-weight:800;color:var(--txt);margin-bottom:8px">Lưu hồ sơ thành công!</div>
+              <div style="font-size:13px;color:var(--txt2);margin-bottom:28px;max-width:380px;margin-left:auto;margin-right:auto;line-height:1.6" id="ocr-success-msg"></div>
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+                <button class="ocr-btn ocr-btn-secondary" onclick="ocrReset()">
+                  <span>📷</span> Nhập hồ sơ khác
+                </button>
+                <button class="ocr-btn ocr-btn-primary" onclick="closeOcrModal()">
+                  <span>✓</span> Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end ocr-body -->
+
+        <!-- ── Footer buttons ── -->
+        <div class="ocr-footer" id="ocr-footer-1">
+          <span style="font-size:12px;color:var(--txt2)" id="ocr-status-txt">Chọn bệnh nhân và tải ảnh lên để bắt đầu</span>
+          <button class="ocr-btn ocr-btn-secondary" onclick="closeOcrModal()">Huỷ</button>
+          <button class="ocr-btn ocr-btn-primary" id="ocr-scan-btn" onclick="ocrStartScan()">
+            <span>🔍</span> Quét tài liệu
+          </button>
+        </div>
+        <div class="ocr-footer" id="ocr-footer-2" style="display:none">
+          <button class="ocr-btn ocr-btn-secondary" onclick="ocrGoStep(1)">← Quay lại</button>
+          <button class="ocr-btn ocr-btn-primary" onclick="ocrSaveRecord()">
+            <span>💾</span> Lưu vào hồ sơ bệnh nhân
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Ẩn logo "Built with Spline" trong shadow-DOM của spline-viewer -->
+    <script>
+      (function () {
+        const CSS_HIDE =
+          '#logo,a[href*="spline.design"],[id*="logo"],[class*="logo"],[class*="watermark"]{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;}';
+        function strip() {
+          document.querySelectorAll("spline-viewer").forEach((v) => {
+            const root = v.shadowRoot;
+            if (!root) return;
+            // 1) xoá trực tiếp mọi phần tử logo/watermark
+            root
+              .querySelectorAll('#logo, a[href*="spline.design"], [id*="logo"], [class*="watermark"]')
+              .forEach((e) => e.remove());
+            // 2) chèn style ẩn (phòng khi logo được thêm lại sau)
+            if (!root.querySelector("style[data-nologo]")) {
+              const s = document.createElement("style");
+              s.setAttribute("data-nologo", "");
+              s.textContent = CSS_HIDE;
+              root.appendChild(s);
+            }
+            // 3) theo dõi shadow-DOM, logo xuất hiện là xoá ngay
+            if (!v._mo) {
+              v._mo = new MutationObserver(() => {
+                root
+                  .querySelectorAll('#logo, a[href*="spline.design"], [class*="watermark"]')
+                  .forEach((e) => e.remove());
+              });
+              v._mo.observe(root, { childList: true, subtree: true });
+            }
+          });
+        }
+        let tries = 0;
+        const t = setInterval(() => {
+          strip();
+          if (++tries > 60) clearInterval(t);
+        }, 250);
+        window.addEventListener("load", strip);
+
+        // ── Tải cảnh 3D SAU khi trang đã hiện (giảm lag lúc load) ──
+        function loadSpline() {
+          document.querySelectorAll("spline-viewer[data-url]").forEach((v) => {
+            v.setAttribute("url", v.getAttribute("data-url"));
+            v.removeAttribute("data-url");
+          });
+        }
+        window.addEventListener("load", () => {
+          const go = () => setTimeout(loadSpline, 350);
+          if ("requestIdleCallback" in window)
+            requestIdleCallback(go, { timeout: 1200 });
+          else go();
+        });
+      })();
+    </script>
+
+    <!-- App scripts — defer: chạy sau khi DOM parse xong, đúng thứ tự,
+         vẫn sau gsap/lucide (cũng defer ở <head>) → không vỡ phụ thuộc. -->
+    <script defer src="js/app.js?v=32"></script>
+    <script defer src="js/ocr.js?v=32"></script>
+    <script defer src="js/animations.js?v=32"></script>
+    <script defer src="js/header-scroll.js?v=32"></script>
+  </body>
+</html>
