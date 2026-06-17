@@ -75,7 +75,7 @@
     </script>
 
     <!-- App styles -->
-    <link rel="stylesheet" href="css/styles.css?v=35" />
+    <link rel="stylesheet" href="css/styles.css?v=36" />
   </head>
 
   <body>
@@ -1353,9 +1353,10 @@
                 id="af-phone"
                 name="patient-tel"
                 type="tel"
-                autocomplete="tel"
+                autocomplete="off"
                 inputmode="tel"
                 placeholder="0901 234 567"
+                oninput="this.value=this.value.replace(/[^0-9+\s().-]/g,'')"
               />
             </div>
             <div class="af-group">
@@ -4580,9 +4581,9 @@
 
     <!-- App scripts — defer: chạy sau khi DOM parse xong, đúng thứ tự,
          vẫn sau gsap/lucide (cũng defer ở <head>) → không vỡ phụ thuộc. -->
-    <script defer src="js/app.js?v=35"></script>
-    <script defer src="js/ocr.js?v=35"></script>
-    <script defer src="js/animations.js?v=35"></script>
-    <script defer src="js/header-scroll.js?v=35"></script>
+    <script defer src="js/app.js?v=36"></script>
+    <script defer src="js/ocr.js?v=36"></script>
+    <script defer src="js/animations.js?v=36"></script>
+    <script defer src="js/header-scroll.js?v=36"></script>
   </body>
 </html>

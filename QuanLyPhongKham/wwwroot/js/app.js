@@ -454,6 +454,10 @@
         const afName = document.getElementById("af-name");
         if (afName && !afName.value && currentUser?.name)
           afName.value = currentUser.name;
+        // Chrome đôi khi tự điền username (vd "bsnguyenvana") vào ô SĐT →
+        // xoá nếu giá trị chứa chữ cái (số điện thoại chỉ gồm số).
+        const afPhone = document.getElementById("af-phone");
+        if (afPhone && /[a-zA-Z]/.test(afPhone.value)) afPhone.value = "";
       }
 
       function doLogout() {
@@ -2424,15 +2428,27 @@ Bệnh án đã được lập thành công:
         document.getElementById("toast").classList.remove("show");
       }
 
-      // ── Set today as min date ──
-      const today = new Date().toISOString().split("T")[0];
-      ["af-date", "sb-date", "ms-date"].forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.min = today;
-          el.value = today;
-        }
-      });
+      // ── Ngày mặc định: quá giờ làm việc trong ngày → tự chuyển sang HÔM SAU ──
+      // Giờ làm: T2–T7 đến 20:00, CN đến 12:00.
+      (function setDefaultBookingDate() {
+        const now = new Date();
+        const pad = (n) => String(n).padStart(2, "0");
+        const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+        const closeHour = now.getDay() === 0 ? 12 : 20; // CN đóng 12h
+        const def = new Date(now);
+        if (now.getHours() >= closeHour) def.setDate(def.getDate() + 1); // hết giờ → mai
+
+        const todayStr = ymd(now);
+        const defStr = ymd(def);
+        ["af-date", "sb-date", "ms-date"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.min = todayStr;     // không cho chọn ngày quá khứ
+            el.value = defStr;     // mặc định hôm nay (hoặc mai nếu đã hết giờ)
+          }
+        });
+      })();
 
       // ════════════════════════════════════
       // INIT — Khôi phục session từ .NET cookie
