@@ -462,10 +462,21 @@ namespace QuanLyPhongKham.Controllers
             string docSubject = $"[MedCare] 🔔 Lịch hẹn mới: {req.PatientName} — {req.Date} {req.Time}";
             string docBody    = BuildDoctorBookingEmail(req, appt.Id, confirmUrl, rejectUrl);
 
-            // Gửi email KHÔNG chặn response (fire-and-forget) — lịch đã lưu DB ở trên rồi.
-            // Tránh treo request nếu SMTP chậm; lỗi gửi mail được log lại, không làm hỏng đặt lịch.
-            _ = SendMailSafe(req.PatientEmail ?? _fromEmail, patSubject, patBody);
-            _ = SendMailSafe(req.DoctorEmail  ?? _fromEmail, docSubject, docBody);
+            // Đợi gửi email để BIẾT kết quả (lịch đã lưu DB rồi → KHÔNG fail đặt lịch nếu email lỗi).
+            bool    emailSent  = false;
+            string? emailError = null;
+            try
+            {
+                await Task.WhenAll(
+                    SendMailAsync(req.PatientEmail ?? _fromEmail, patSubject, patBody),
+                    SendMailAsync(req.DoctorEmail  ?? _fromEmail, docSubject, docBody));
+                emailSent = true;
+            }
+            catch (Exception ex)
+            {
+                emailError = ex.Message;
+                Serilog.Log.Error(ex, "Gửi email đặt lịch thất bại");
+            }
 
             return Ok(new
             {
@@ -473,6 +484,8 @@ namespace QuanLyPhongKham.Controllers
                 appointmentId = appt.Id,
                 shortCode,
                 token,
+                emailSent,
+                emailError,
             });
         }
 
@@ -633,7 +646,8 @@ namespace QuanLyPhongKham.Controllers
             var smtp = new SmtpClient("smtp.gmail.com", 587)
             {
                 Credentials = new NetworkCredential(_fromEmail, _emailPass),
-                EnableSsl   = true
+                EnableSsl   = true,
+                Timeout     = 15000   // 15s — tránh treo request nếu SMTP không phản hồi
             };
             await Task.Run(() => smtp.Send(mail));
         }

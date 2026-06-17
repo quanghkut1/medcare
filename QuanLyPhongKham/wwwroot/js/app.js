@@ -2223,9 +2223,13 @@ Bệnh án đã được lập thành công:
         } else if (state === "success") {
           inner.innerHTML = `
       <div style="text-align:center;padding:8px 0 16px">
-        <div style="font-size:52px;margin-bottom:12px">📬</div>
-        <div style="font-size:17px;font-weight:800;color:var(--txt);margin-bottom:6px">Email đã gửi thành công!</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:18px">Gửi qua <b>smtp.gmail.com:587</b> · TLS · App Password<br>2 email đã được gửi vào hộp thư.</div>
+        <div style="font-size:52px;margin-bottom:12px">${data && data.emailSent === false ? "⚠️" : "📬"}</div>
+        <div style="font-size:17px;font-weight:800;color:var(--txt);margin-bottom:6px">${data && data.emailSent === false ? "Đặt lịch thành công (email chưa gửi được)" : "Đặt lịch & gửi email thành công!"}</div>
+        ${
+          data && data.emailSent === false
+            ? `<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px;text-align:left;font-size:12px;color:#9a3412;margin-bottom:14px">Lịch đã lưu (mã #${(data && data.appointmentId) || ""}) nhưng <b>email xác nhận chưa gửi được</b>:<br><span style="font-family:monospace;font-size:11px">${(data && data.emailError) || "không rõ lý do"}</span></div>`
+            : `<div style="font-size:13px;color:var(--muted);margin-bottom:18px">Gửi qua <b>smtp.gmail.com:587</b> · TLS<br>2 email đã được gửi vào hộp thư.</div>`
+        }
         <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:14px;text-align:left;margin-bottom:14px">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
             <span style="font-size:18px">🙋</span>
@@ -2259,8 +2263,8 @@ Bệnh án đã được lập thành công:
           inner.innerHTML = `
       <div style="text-align:center;padding:8px 0 16px">
         <div style="font-size:52px;margin-bottom:12px">❌</div>
-        <div style="font-size:17px;font-weight:800;color:var(--txt);margin-bottom:6px">Gửi email thất bại</div>
-        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px;text-align:left;font-size:12.5px;color:#991b1b;margin:12px 0">${(data && data.error) || "Lỗi kết nối Gmail MCP. Vui lòng thử lại."}</div>
+        <div style="font-size:17px;font-weight:800;color:var(--txt);margin-bottom:6px">Đặt lịch thất bại</div>
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px;text-align:left;font-size:12.5px;color:#991b1b;margin:12px 0">${(data && data.error) || "Không thể đặt lịch. Vui lòng thử lại."}</div>
         <div style="display:flex;gap:8px">
           <button onclick="closeEmailInputModal();document.getElementById('email-status-modal').classList.remove('open')" style="flex:1;padding:11px;background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:10px;font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:600;cursor:pointer">Đóng</button>
           <button onclick="document.getElementById('email-status-modal').classList.remove('open');openEmailInputModal(_pendingEmailData)" style="flex:1;padding:11px;background:var(--blue);color:white;border:none;border-radius:10px;font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Thử lại</button>
