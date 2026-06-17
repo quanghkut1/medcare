@@ -8,6 +8,7 @@ using QuanLyPhongKham.Data;
 using QuanLyPhongKham.Helpers;
 using QuanLyPhongKham.Models;
 using System.Net;
+using System.Net.Http.Json;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
@@ -639,6 +640,29 @@ namespace QuanLyPhongKham.Controllers
 
         private async Task SendMailAsync(string to, string subject, string html)
         {
+            // ── Ưu tiên Brevo HTTP API (cổng 443) — vì cloud (Railway/Render...) CHẶN cổng SMTP 587 ──
+            var brevoKey = _config["BrevoApiKey"];
+            if (!string.IsNullOrWhiteSpace(brevoKey))
+            {
+                using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+                http.DefaultRequestHeaders.Add("api-key", brevoKey);
+                var payload = new
+                {
+                    sender      = new { email = _fromEmail, name = "MedCare" },
+                    to          = new[] { new { email = to } },
+                    subject,
+                    htmlContent = html
+                };
+                var resp = await http.PostAsJsonAsync("https://api.brevo.com/v3/smtp/email", payload);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    var body = await resp.Content.ReadAsStringAsync();
+                    throw new Exception($"Brevo API {(int)resp.StatusCode}: {body}");
+                }
+                return;
+            }
+
+            // ── Local dev: Gmail SMTP (chạy được vì máy cá nhân không chặn cổng 587) ──
             var mail = new MailMessage(_fromEmail, to)
             {
                 Subject = subject, Body = html, IsBodyHtml = true
@@ -647,7 +671,7 @@ namespace QuanLyPhongKham.Controllers
             {
                 Credentials = new NetworkCredential(_fromEmail, _emailPass),
                 EnableSsl   = true,
-                Timeout     = 15000   // 15s — tránh treo request nếu SMTP không phản hồi
+                Timeout     = 15000
             };
             await Task.Run(() => smtp.Send(mail));
         }
