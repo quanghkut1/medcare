@@ -105,7 +105,21 @@
       "Bash(git add *)",
       "Bash(grep -iE \"\\\\.env$|Development\\\\.json|\\\\.db$|/keys/|/logs/\")",
       "Bash(git config *)",
-      "Bash(git commit -q -m 'MedCare: hệ thống quản lý phòng khám + AI \\(Docker, Postgres, CI/CD, tests\\) *)"
+      "Bash(git commit -q -m 'MedCare: hệ thống quản lý phòng khám + AI \\(Docker, Postgres, CI/CD, tests\\) *)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(PYTHONIOENCODING=utf-8 python add_appendix_K.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python add_K_clickable_index.py)",
+      "WebFetch(domain:img.vietqr.io)",
+      "Bash(PYTHONIOENCODING=utf-8 python fix_figures.py)",
+      "Bash(ls *_v*.docx)",
+      "Bash(rm -f MedCare_Report_EN_FIXED2_with_evidence_v*.docx)",
+      "Bash(PYTHONIOENCODING=utf-8 python make_lof_clickable.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python make_lot_clickable.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c \"import zipfile; z=zipfile.ZipFile\\('MedCare_Report_EN_FIXED2_with_evidence.docx'\\); imgs=[n for n in z.namelist\\(\\) if n.startswith\\('word/media'\\)]; print\\(len\\(imgs\\),'ảnh:', [n.split\\('/'\\)[-1] for n in imgs][:30]\\)\")",
+      "Bash(PYTHONIOENCODING=utf-8 python generate_drawio.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python generate_drawio2.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python generate_drawio3.py)",
+      "Bash(awk '{print \"  \"$NF, $5\"bytes\"}')"
     ]
   }
 }

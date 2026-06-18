@@ -383,8 +383,7 @@
         document.getElementById("rb-username").textContent =
           currentUser?.name || "Người dùng";
         if (currentRole === "doctor") {
-          document.getElementById("rb-extra").textContent =
-            "🩺 Có quyền lập bệnh án · Xem toàn bộ lịch hẹn";
+          document.getElementById("rb-extra").textContent = "";
         } else if (currentRole === "admin") {
           // Admin: hiện 2 link dẫn thẳng tới trang quản trị (MVC)
           const ex = document.getElementById("rb-extra");
@@ -398,8 +397,7 @@
             'style="color:#fff;font-weight:700;text-decoration:underline;margin:0 6px">' +
             '👥 Quản lý tài khoản</a>';
         } else {
-          document.getElementById("rb-extra").textContent =
-            "📋 Chỉ xem lịch khám của bạn";
+          document.getElementById("rb-extra").textContent = "";
         }
         // Shift nav
         document.getElementById("site-nav").classList.add("with-banner");
