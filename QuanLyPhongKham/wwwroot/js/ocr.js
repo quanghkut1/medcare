@@ -13,6 +13,8 @@
     async function openOcrModal() {
       document.getElementById("ocr-overlay").classList.add("open");
       document.body.style.overflow = "hidden";
+      _ocrFile = null;                                          // mở mới → reset sạch ảnh cũ
+      document.getElementById("ocr-file-input").value = "";
       ocrGoStep(1);
       try {
         const res  = await fetch(`${SMTP_SERVER}/api/ocr/patients-list`, { credentials:"include" });
@@ -51,6 +53,14 @@
       document.getElementById("ocr-footer-1").style.display = n === 1 ? ""       : "none";
       document.getElementById("ocr-footer-2").style.display = n === 2 ? ""       : "none";
       // Step 3 has no footer (buttons inside panel)
+
+      // Khi về Bước 1: khôi phục đúng ô upload (sửa lỗi mất chỗ chọn ảnh sau khi quét / quay lại)
+      if (n === 1) {
+        document.getElementById("ocr-scanning").style.display = "none";
+        const hasFile = !!_ocrFile;
+        document.getElementById("ocr-preview-wrap").style.display = hasFile ? ""     : "none";
+        document.getElementById("ocr-drop-zone").style.display    = hasFile ? "none" : "";
+      }
     }
 
     function ocrHandleFile(file) {
