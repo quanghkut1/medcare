@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyPhongKham.Models;
 using QuanLyPhongKham.Data;
+using QuanLyPhongKham.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.Net.Mail;
@@ -67,6 +68,7 @@ namespace QuanLyPhongKham.Controllers
         {
             var app = _context.Appointments
                 .Include(a => a.Patient)
+                .Include(a => a.Doctor)
                 .FirstOrDefault(a => a.Id == id && a.ApprovalToken == token);
 
             if (app != null)
@@ -75,10 +77,13 @@ namespace QuanLyPhongKham.Controllers
                 app.ApprovalToken = null;
                 _context.SaveChanges();
 
+                // Phí khám theo CHUYÊN KHOA (đồng bộ với email đặt lịch — không dùng số cố định)
+                long examFee = PricingService.GetExamFee(app.Doctor?.Specialty);
+
                 // Mã thanh toán theo lịch hẹn
                 string payCode = $"MEDCARE {app.Id:D6}";
                 string qrUrl   = $"https://img.vietqr.io/image/MB-{_bankAccount}-compact2.jpg" +
-                                  $"?amount=200000&addInfo={Uri.EscapeDataString(payCode)}" +
+                                  $"?amount={examFee}&addInfo={Uri.EscapeDataString(payCode)}" +
                                   $"&accountName={Uri.EscapeDataString(_bankOwner)}";
 
                 string subject = $"[MedCare] ✅ Lịch khám #{app.Id} đã được xác nhận!";
@@ -89,7 +94,7 @@ namespace QuanLyPhongKham.Controllers
                   <p>Hẹn gặp bạn vào lúc: <b>{app.AppointmentDate:dd/MM/yyyy HH:mm}</b></p>
                   <hr/>
                   <h3 style='color:#1057a4'>💳 Thanh toán trước qua VietQR</h3>
-                  <p>Số tiền: <b style='color:#e53935'>200,000 VNĐ</b></p>
+                  <p>Số tiền: <b style='color:#e53935'>{examFee:N0} VNĐ</b></p>
                   <p>Nội dung CK: <b style='color:#e53935'>{payCode}</b></p>
                   <img src='{qrUrl}' style='width:200px;border-radius:10px;margin-top:8px'/>
                 </div>";
@@ -202,12 +207,21 @@ namespace QuanLyPhongKham.Controllers
         {
             var app = _context.Appointments
                 .Include(a => a.Patient)
+                .Include(a => a.Doctor)
                 .FirstOrDefault(a => a.Id == AppointmentId);
 
             if (app != null)
             {
-                app.Status = "Đã khám & Xuất HĐ";
+                app.Status       = "Đã khám & Xuất HĐ";
+                // LƯU chẩn đoán & đơn thuốc vào DB — MedBot và AI-brief đọc từ đây
+                // (trước đây chỉ in PDF mà không lưu → grounding thiếu dữ liệu).
+                app.Diagnosis    = Diagnosis;
+                app.Prescription = Prescription;
                 _context.SaveChanges();
+
+                // Hóa đơn = phí khám theo chuyên khoa + tiền thuốc theo đơn (PricingService)
+                var invoice = PricingService.EstimateFromText(app.Doctor?.Specialty, Prescription);
+                long total  = invoice.GrandTotal;
 
                 var pdfBytes = Document.Create(container =>
                 {
@@ -240,15 +254,19 @@ namespace QuanLyPhongKham.Controllers
                             }
                             x.Item().PaddingTop(5).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
                             x.Item().PaddingTop(10).AlignRight()
-                                .Text("TỔNG TIỀN: 200,000 VNĐ").Bold().FontColor(Colors.Red.Medium);
+                                .Text($"Phí khám ({app.Doctor?.Specialty ?? "Đa khoa"}): {invoice.ExamFee:N0} VNĐ");
+                            x.Item().AlignRight()
+                                .Text($"Tiền thuốc: {invoice.DrugTotal:N0} VNĐ");
+                            x.Item().AlignRight()
+                                .Text($"TỔNG TIỀN: {total:N0} VNĐ").Bold().FontColor(Colors.Red.Medium);
                         });
                     });
                 }).GeneratePdf();
 
-                // QR đúng số tài khoản thật
+                // QR đúng số tài khoản thật + đúng TỔNG TIỀN (phí khám + thuốc)
                 string payCode = $"MEDCARE {app.Id:D6}";
                 string qrUrl   = $"https://img.vietqr.io/image/MB-{_bankAccount}-compact2.jpg" +
-                                  $"?amount=200000&addInfo={Uri.EscapeDataString(payCode)}" +
+                                  $"?amount={total}&addInfo={Uri.EscapeDataString(payCode)}" +
                                   $"&accountName={Uri.EscapeDataString(_bankOwner)}";
 
                 string subject = $"[MedCare] Bệnh án & Hóa đơn #{app.Id}";
@@ -257,13 +275,15 @@ namespace QuanLyPhongKham.Controllers
                   <h2 style='color:#1057a4'>🏥 Hoàn Tất Khám Bệnh</h2>
                   <p>Xin chào <b>{app.Patient?.FullName}</b>, file PDF bệnh án đã được đính kèm.</p>
                   <hr/>
-                  <h3 style='color:#1057a4'>💳 Thanh toán 200,000 VNĐ</h3>
+                  <h3 style='color:#1057a4'>💳 Thanh toán {total:N0} VNĐ</h3>
+                  <p style='font-size:13px;color:#6b7280'>Phí khám: {invoice.ExamFee:N0}đ · Tiền thuốc: {invoice.DrugTotal:N0}đ</p>
                   <p>MB Bank · <b>{_bankAccount}</b> · {_bankOwner}</p>
                   <p>Nội dung CK: <b style='color:#e53935'>{payCode}</b></p>
                   <img src='{qrUrl}' style='width:220px;border-radius:10px;margin-top:8px'/>
                 </div>";
 
-                SendEmailToPatient(_adminEmail, subject, body, pdfBytes);
+                // Gửi ĐÚNG bệnh nhân (email lưu lúc đặt lịch); fallback hộp thư phòng khám
+                SendEmailToPatient(app.PatientEmail ?? _adminEmail, subject, body, pdfBytes);
                 TempData["Message"] = "✅ Đã lưu bệnh án và gửi Hóa đơn PDF + QR đến bệnh nhân!";
             }
             return RedirectToAction("DanhSachLichHen");

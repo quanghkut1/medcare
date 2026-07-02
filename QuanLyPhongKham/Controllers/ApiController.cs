@@ -254,11 +254,10 @@ namespace QuanLyPhongKham.Controllers
             if (acc == null || !string.Equals(acc.Email?.Trim(), email, StringComparison.OrdinalIgnoreCase))
                 return Ok(new { success = true, message = "Nếu thông tin khớp, mật khẩu mới đã được gửi tới email của bạn." });
 
-            // Sinh mật khẩu tạm (có chữ + số), lưu hash
+            // Sinh mật khẩu tạm (có chữ + số).
+            // QUAN TRỌNG: gửi email THÀNH CÔNG rồi mới lưu hash — nếu lưu trước mà
+            // email lỗi thì mật khẩu cũ đã mất còn mật khẩu mới không tới nơi → khóa ngoài.
             string temp = "MedCare@" + new Random().Next(1000, 9999);
-            acc.Password = BCrypt.Net.BCrypt.HashPassword(temp);
-            _context.SaveChanges();
-
             try
             {
                 string body = $@"<div style='font-family:Arial;padding:20px'>
@@ -269,6 +268,9 @@ namespace QuanLyPhongKham.Controllers
                 await SendMailAsync(email, "[MedCare] Mật khẩu mới của bạn", body);
             }
             catch (Exception ex) { return Ok(new { success = false, error = "Không gửi được email: " + ex.Message }); }
+
+            acc.Password = BCrypt.Net.BCrypt.HashPassword(temp);
+            _context.SaveChanges();
 
             return Ok(new { success = true, message = "Mật khẩu mới đã được gửi tới email của bạn." });
         }
@@ -614,8 +616,10 @@ namespace QuanLyPhongKham.Controllers
                       <p><b>Số tiền:</b> {amount:N0}đ</p>
                     </div>";
 
+                    // Email xác nhận gửi ĐÚNG bệnh nhân (PatientEmail lưu lúc đặt lịch);
+                    // email báo bác sĩ/phòng khám vẫn về hộp thư quản trị.
                     await Task.WhenAll(
-                        SendMailAsync(_fromEmail, $"[MedCare] 💳 Xác nhận thanh toán lịch #{apptId}", patBody),
+                        SendMailAsync(appt.PatientEmail ?? _fromEmail, $"[MedCare] 💳 Xác nhận thanh toán lịch #{apptId}", patBody),
                         SendMailAsync(_fromEmail, $"[MedCare] 💰 Bệnh nhân đã TT — Lịch #{apptId}", docBody)
                     );
                 }
