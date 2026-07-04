@@ -2916,45 +2916,20 @@ Bệnh án đã được lập thành công:
       // Hiện lại ngay khi ngừng cuộn (sau 200ms).
       // ════════════════════════════════════════════════════════
       (function () {
-        // THỬ NGHIỆM: true = 3D chạy LIÊN TỤC (không tắt khi cuộn/rời hero) để xem có lag không.
-        // Muốn quay lại chế độ tiết kiệm hiệu năng → đổi thành false.
-        const KEEP_3D_ALWAYS_ON = true;
-
+        // 3D chạy LIÊN TỤC khi hero còn trên màn hình (kể cả lúc đang cuộn —
+        // không nhấp nháy tắt/bật). Chỉ TẮT khi đã cuộn QUA HẾT hero:
+        // lúc đó WebGL dừng render → phần còn lại của trang cuộn nhẹ.
+        // (Kết hợp với DPR=1 + canvas 60% để lúc hiển thị cũng nhẹ nhất có thể.)
         const hero3d = document.querySelector(".hero-3d");
         const hero = document.getElementById("hero");
-        if (!hero3d || KEEP_3D_ALWAYS_ON) return;
+        if (!hero3d || !hero) return;
 
-        let heroVisible = true;   // hero còn trong màn hình?
-        let scrolling = false;    // đang cuộn?
-        let timer = null;
-
-        // 3D chỉ render khi: hero ĐANG hiển thị VÀ KHÔNG đang cuộn.
-        function apply() {
-          hero3d.style.display = heroVisible && !scrolling ? "" : "none";
-        }
-
-        // Tắt hẳn 3D khi hero rời khỏi viewport (cuộn xuống đọc nội dung)
-        if (hero && "IntersectionObserver" in window) {
+        if ("IntersectionObserver" in window) {
           new IntersectionObserver(
             function (entries) {
-              heroVisible = entries[0].isIntersecting;
-              apply();
+              hero3d.style.display = entries[0].isIntersecting ? "" : "none";
             },
             { threshold: 0.05 }
           ).observe(hero);
         }
-
-        // Tạm tắt 3D trong lúc cuộn → cuộn mượt; bật lại khi ngừng (nếu hero còn hiện)
-        window.addEventListener(
-          "scroll",
-          function () {
-            if (!scrolling) { scrolling = true; apply(); }
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-              scrolling = false;
-              apply();
-            }, 200);
-          },
-          { passive: true }
-        );
       })();
