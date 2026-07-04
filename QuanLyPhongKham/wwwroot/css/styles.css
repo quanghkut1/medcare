@@ -480,6 +480,16 @@
         border: 0;
         display: block;
       }
+      /* GIỮ 3D CHẠY LIÊN TỤC nhưng NHẸ: canvas WebGL render ở 60% kích thước
+         rồi phóng to lại bằng GPU (transform scale KHÔNG làm tăng số pixel vẽ).
+         Số pixel mỗi khung hình chỉ còn 0.6×0.6 = 36% → nhẹ ~3 lần, gần như
+         không nhận ra khác biệt vì cảnh chỉ là trang trí nền. */
+      .hero-3d spline-viewer {
+        width: 60%;
+        height: 60%;
+        transform: scale(1.6667);
+        transform-origin: top left;
+      }
       /* 3D giờ nằm gọn bên phải nên không cần lớp tối phủ chữ.
          Giữ 1 dải mờ ở MÉP TRÁI vùng 3D để hoà mượt vào nền (không vệt cứng). */
       .hero-scrim {
