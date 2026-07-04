@@ -2916,9 +2916,13 @@ Bệnh án đã được lập thành công:
       // Hiện lại ngay khi ngừng cuộn (sau 200ms).
       // ════════════════════════════════════════════════════════
       (function () {
+        // THỬ NGHIỆM: true = 3D chạy LIÊN TỤC (không tắt khi cuộn/rời hero) để xem có lag không.
+        // Muốn quay lại chế độ tiết kiệm hiệu năng → đổi thành false.
+        const KEEP_3D_ALWAYS_ON = true;
+
         const hero3d = document.querySelector(".hero-3d");
         const hero = document.getElementById("hero");
-        if (!hero3d) return;
+        if (!hero3d || KEEP_3D_ALWAYS_ON) return;
 
         let heroVisible = true;   // hero còn trong màn hình?
         let scrolling = false;    // đang cuộn?
