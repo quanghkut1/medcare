@@ -32,6 +32,17 @@
     <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <!-- Lucide Icons (pinned trên jsdelivr — ổn định hơn unpkg @latest) -->
     <script defer src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <!-- Ép devicePixelRatio = 1 TRƯỚC khi Spline tải: trên màn HiDPI (DPR 1.25–2)
+         canvas WebGL phải vẽ gấp 1.5–4 lần số pixel. Ép về 1 → GPU nhẹ hẳn mà
+         layout/chữ CSS không đổi (chỉ canvas mềm nét đi chút). -->
+    <script>
+      try {
+        Object.defineProperty(window, "devicePixelRatio", {
+          get: function () { return 1; },
+          configurable: true,
+        });
+      } catch (e) {}
+    </script>
     <!-- Spline viewer (chạy trong trang → ẩn được logo) -->
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
 
