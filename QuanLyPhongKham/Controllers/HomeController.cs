@@ -166,17 +166,18 @@ namespace QuanLyPhongKham.Controllers
         [AllowAnonymous]
         public IActionResult PatientConfirmNewSlot(int id, long newDate)
         {
-            var app = _context.Appointments.FirstOrDefault(a => a.Id == id);
+            var app = _context.Appointments.Include(a => a.Doctor).FirstOrDefault(a => a.Id == id);
             if (app != null)
             {
                 app.AppointmentDate = new DateTime(newDate);
                 app.Status          = "Đã xác nhận (AI)";
                 _context.SaveChanges();
 
-                // Gửi email xác nhận lịch mới + QR mới
+                // Gửi email xác nhận lịch mới + QR mới (phí đúng theo chuyên khoa)
+                long examFee   = PricingService.GetExamFee(app.Doctor?.Specialty);
                 string payCode = $"MEDCARE {app.Id:D6}";
                 string qrUrl   = $"https://img.vietqr.io/image/MB-{_bankAccount}-compact2.jpg" +
-                                  $"?amount=200000&addInfo={Uri.EscapeDataString(payCode)}" +
+                                  $"?amount={examFee}&addInfo={Uri.EscapeDataString(payCode)}" +
                                   $"&accountName={Uri.EscapeDataString(_bankOwner)}";
 
                 string subject = $"[MedCare] 🗓️ Lịch khám mới: {app.AppointmentDate:dd/MM/yyyy HH:mm}";
@@ -399,17 +400,10 @@ namespace QuanLyPhongKham.Controllers
                 }
                 sb.Append("</ul></div>");
 
-                var mail = new MailMessage(_adminEmail, app.PatientEmail ?? _adminEmail)
-                {
-                    Subject    = "[MedCare] 🤖 AI gợi ý khung giờ khám mới",
-                    Body       = sb.ToString(),
-                    IsBodyHtml = true
-                };
-                new SmtpClient("smtp.gmail.com", 587)
-                {
-                    Credentials = new NetworkCredential(_adminEmail, _emailAppPassword),
-                    EnableSsl   = true
-                }.Send(mail);
+                // Gửi qua hàm chung (Brevo-first) — SMTP trực tiếp bị Railway chặn cổng 587,
+                // trước đây làm request treo ~100s rồi nuốt lỗi, bệnh nhân không nhận được gợi ý.
+                SendEmailToPatient(app.PatientEmail ?? _adminEmail,
+                    "[MedCare] 🤖 AI gợi ý khung giờ khám mới", sb.ToString(), null);
             }
             catch (Exception ex) { Console.WriteLine($"[SendAiSuggestion] {ex.Message}"); }
         }
