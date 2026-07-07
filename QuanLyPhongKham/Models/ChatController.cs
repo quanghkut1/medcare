@@ -319,6 +319,7 @@ namespace QuanLyPhongKham.Controllers
                 sb.AppendLine("─────────────────────────────────");
             }
 
+            sb.AppendLine("QUAN TRỌNG: Trả lời NGẮN GỌN, tối đa khoảng 100-120 từ, đi thẳng vào trọng tâm. Không lan man, không nhắc lại toàn bộ hồ sơ trừ khi được hỏi.");
             sb.AppendLine("Cuối mỗi câu trả lời, thêm 2-3 gợi ý ngắn phù hợp với ngữ cảnh trong dấu [GỢI Ý: câu1 | câu2 | câu3]");
 
             return sb.ToString();
@@ -360,7 +361,9 @@ namespace QuanLyPhongKham.Controllers
                 var payload = new
                 {
                     model      = "claude-sonnet-4-5",
-                    max_tokens = 800,
+                    // 350 là đủ cho 1 câu tư vấn ngắn gọn + gợi ý.
+                    // Thời gian sinh ~ tỉ lệ độ dài output → giảm trần = phản hồi nhanh hơn hẳn.
+                    max_tokens = 350,
                     system     = systemPrompt,
                     messages,
                 };
