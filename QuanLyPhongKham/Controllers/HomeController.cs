@@ -18,6 +18,7 @@ namespace QuanLyPhongKham.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _config;
         private readonly string _emailAppPassword;
         private readonly string _adminEmail;
         private readonly string _bankAccount;
@@ -26,6 +27,7 @@ namespace QuanLyPhongKham.Controllers
         public HomeController(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
+            _config  = config;
             _emailAppPassword = config["EmailSettings:AppPassword"] ?? "";
             _adminEmail       = config["EmailSettings:FromEmail"] ?? "";
             _bankAccount      = config["PaymentSettings:BankAccount"] ?? "";
@@ -417,6 +419,40 @@ namespace QuanLyPhongKham.Controllers
         {
             try
             {
+                // ── Ưu tiên Brevo HTTP API (cổng 443) — Railway CHẶN cổng SMTP 587.
+                //    (Cùng lý do ApiController.SendMailAsync đã chuyển sang Brevo.) ──
+                var brevoKey = _config["BrevoApiKey"];
+                if (!string.IsNullOrWhiteSpace(brevoKey))
+                {
+                    using var http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+                    http.DefaultRequestHeaders.Add("api-key", brevoKey);
+                    object payload = pdfAttachment == null
+                        ? new
+                          {
+                              sender      = new { email = _adminEmail, name = "MedCare" },
+                              to          = new[] { new { email = toEmail } },
+                              subject,
+                              htmlContent = bodyHtml,
+                          }
+                        : new
+                          {
+                              sender      = new { email = _adminEmail, name = "MedCare" },
+                              to          = new[] { new { email = toEmail } },
+                              subject,
+                              htmlContent = bodyHtml,
+                              attachment  = new[] { new { name = "BenhAn_HoaDon.pdf",
+                                                          content = Convert.ToBase64String(pdfAttachment) } },
+                          };
+                    var resp = System.Net.Http.Json.HttpClientJsonExtensions
+                        .PostAsJsonAsync(http, "https://api.brevo.com/v3/smtp/email", payload)
+                        .GetAwaiter().GetResult();
+                    if (!resp.IsSuccessStatusCode)
+                        Console.WriteLine($"[SendEmailToPatient] Brevo {(int)resp.StatusCode}: " +
+                            resp.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+                    return;
+                }
+
+                // ── Local dev: Gmail SMTP (máy cá nhân không chặn cổng 587) ──
                 var mail = new MailMessage(_adminEmail, toEmail)
                 {
                     Subject    = subject,
